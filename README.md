@@ -15,7 +15,7 @@ LLM inference, RAG, agents, evaluation, and observability workflows.
 - Ruff linting and formatting configuration
 - pytest development dependency
 - Shared VS Code workspace settings
-- Architecture and development roadmap
+- Architecture, roadmap, backend, and engineering documentation
 
 ## Planned Direction
 
@@ -27,8 +27,15 @@ AetherLab is intended to grow through small, working vertical slices:
 4. Tool calling and a bounded agent loop
 5. Broader evaluation, observability, and workflow capabilities
 
-See [docs/design.md](docs/design.md) for the full architecture, engineering principles,
-and roadmap. The document describes the target direction as well as the current state.
+## Documentation
+
+- [Project design](docs/design.md): stable product direction, principles, architecture,
+  and technology choices
+- [Roadmap](docs/roadmap.md): current status, development phases, and completion criteria
+- [Backend design](docs/backend.md): layering, providers, Chat, SSE, errors, logging, and
+  tracing
+- [Engineering guide](docs/engineering.md): workflow, code quality, testing, CI,
+  security, and public-repository policy
 
 ## Prerequisites
 
@@ -92,7 +99,11 @@ collected until the first test suite is added.
 AetherLab/
 |-- backend/             FastAPI backend and Python project files
 |-- frontend/            Future React and TypeScript client
-|-- docs/                Architecture and design documentation
+|-- docs/                Project documentation
+|   |-- design.md        Stable product and architecture direction
+|   |-- roadmap.md       Current status and development phases
+|   |-- backend.md       Backend architecture and contracts
+|   `-- engineering.md   Repository workflow and quality standards
 |-- scripts/             Project automation
 |-- data/                Ignored local runtime data
 |-- .github/             Repository automation and future CI
@@ -134,8 +145,8 @@ for discovery order, scope, and override behavior.
 ## Contributing
 
 The project is in an early stage. Before making changes, read [AGENTS.md](AGENTS.md) and
-[docs/design.md](docs/design.md). Keep documentation aligned with implemented behavior
-and run the relevant checks before opening a pull request.
+the relevant document under [`docs/`](docs/). Keep documentation aligned with implemented
+behavior and run the relevant checks before opening a pull request.
 
 ## License
 
