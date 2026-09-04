@@ -1,0 +1,15 @@
+[project]
+name = "aetherlab-backend"
+version = "0.1.0"
+description = "Backend service for AetherLab AI Engineering Platform"
+requires-python = ">=3.13,<3.14"
+dependencies = [
+    "fastapi>=0.141.1",
+    "uvicorn[standard]>=0.52.4",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=9.1.1",
+    "ruff>=0.16.6",
+]
