@@ -42,6 +42,9 @@ Thumbs.db
 *.pem
 *.key
 
+# Local Codex instructions
+/AGENTS.override.md
+
 # Database
 *.db
 *.sqlite
