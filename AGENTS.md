@@ -5,7 +5,11 @@
 AetherLab is a modular AI engineering platform for LLM inference, RAG, agents,
 evaluation, and observability. The repository is currently in Pre-Alpha / Phase 0.
 
-- Treat `docs/design.md` as the architectural direction and roadmap.
+- Treat `docs/design.md` as the stable product and architecture direction.
+- Treat `docs/roadmap.md` as the source of truth for status, phases, and completion
+  criteria.
+- Follow `docs/backend.md` for backend boundaries and `docs/engineering.md` for the
+  repository workflow and quality standards.
 - Treat the codebase as the source of truth for what is implemented today.
 - Do not describe planned components as available features.
 
@@ -13,7 +17,7 @@ evaluation, and observability. The repository is currently in Pre-Alpha / Phase 
 
 - `backend/`: Python 3.13 FastAPI service managed with `uv`.
 - `frontend/`: reserved for the future React and TypeScript client.
-- `docs/`: design and architecture documentation.
+- `docs/`: design, roadmap, backend, and engineering documentation.
 - `scripts/`: project automation added only when a concrete need exists.
 - `data/`: local runtime data; only `.gitkeep` is tracked.
 - `.github/`: repository automation and future CI workflows.
@@ -67,7 +71,7 @@ When changing backend behavior:
 - Code, identifiers, filenames, persistent comments, docstrings, commit messages, API
   messages, logs, and errors must be in English.
 - Keep `README.md` primarily in English.
-- `docs/design.md` may remain in Chinese.
+- Documents under `docs/` may remain in Chinese.
 - Comments should explain why a decision exists, not restate the code.
 
 ## Security and Data
@@ -84,7 +88,14 @@ When changing backend behavior:
 
 - Update `README.md` when setup steps, commands, supported features, or repository layout
   change.
-- Update `docs/design.md` when an architectural decision or roadmap direction changes.
+- Update `docs/design.md` when stable product principles, architecture, or technology
+  direction changes.
+- Update `docs/roadmap.md` when progress, priorities, phases, or completion criteria
+  change.
+- Update `docs/backend.md` when backend boundaries, contracts, or runtime behavior
+  change.
+- Update `docs/engineering.md` when repository workflow, testing, CI, security, or
+  publication policy changes.
 - Keep examples executable and label planned functionality clearly.
 
 ## Completion Checklist
