@@ -31,10 +31,11 @@ Pre-Alpha / Phase 0
 - FastAPI 基础应用
 - `GET /health`
 - Swagger / OpenAPI 基础验证
+- README 正式内容
+- 公开的 `AGENTS.md` AI 协作规范
 
 当前尚未完成：
 
-- README 正式内容
 - `.env.example` 正式内容
 - Docker Compose 服务定义
 - 自动化测试
@@ -419,6 +420,7 @@ AetherLab/
 │
 ├── .env.example
 ├── .gitignore
+├── AGENTS.md
 ├── docker-compose.yml
 ├── README.md
 └── LICENSE
@@ -1291,10 +1293,11 @@ docs/design.md              中文
 - pytest dependency
 - FastAPI
 - `GET /health`
+- README
+- 公开的 `AGENTS.md` AI 协作规范
 
 #### 接下来补齐
 
-- README
 - `.env.example`
 - `.gitattributes`
 - `.editorconfig`
