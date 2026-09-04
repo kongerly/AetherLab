@@ -6,128 +6,244 @@
 
 **AetherLab**
 
-仓库名称：
-
-```text
-AetherLab
-```
-
-项目定位描述：
+项目描述：
 
 > A modular AI Engineering platform for LLM inference, RAG, Agents, evaluation and observability.
 
----
+### 1.2 当前项目状态
 
-### 1.2 项目定位
+AetherLab 当前处于：
 
-AetherLab 是一个面向 AI Engineering 的模块化实验与应用平台，围绕大语言模型构建统一的：
+```text
+Pre-Alpha / Phase 0
+```
 
-- 模型接入
-- 本地推理
+当前已经完成：
+
+- Git / GitHub 仓库初始化
+- 基础目录结构
+- 项目设计文档
+- VS Code 项目级配置
+- uv Python 环境管理
+- Python 3.13
+- Ruff 代码规范
+- pytest 开发依赖
+- FastAPI 基础应用
+- `GET /health`
+- Swagger / OpenAPI 基础验证
+
+当前尚未完成：
+
+- README 正式内容
+- `.env.example` 正式内容
+- Docker Compose 服务定义
+- 自动化测试
+- CI
+- 配置管理
+- Logging
+- 统一错误模型
+- LLM Provider
+- Chat API
+- SSE Streaming
+- Frontend
+- PostgreSQL
+- Conversation Persistence
+- RAG
+- Agent
+- Evaluation
+- Trace / Observability
+
+因此当前项目应被视为：
+
+> **方向和架构已经明确，但实际功能仍处于最早期工程脚手架阶段。**
+
+## 2. 项目定位
+
+AetherLab 是一个面向 AI Engineering 的模块化实验与应用平台。
+
+围绕大语言模型构建统一的：
+
+- LLM Provider
+- Local / Cloud Inference
+- Chat
 - RAG
 - Agent
 - Tool Calling
 - Memory
 - Evaluation
 - Observability
-- 数据持久化
-- Web 可视化
+- Persistence
+- Web UI
 
-项目并不是一个单纯的聊天机器人，也不是简单封装第三方大模型 API，而是希望完成一套具有完整工程链路的 AI 应用系统。
+项目不是简单的聊天机器人，也不是单纯封装第三方模型 API。
 
-项目核心定位：
+核心目标是实现一个：
 
-> **以 AI / LLM 为核心，以 Backend 和 AI Engineering 为主要工程能力，以 Web 前端作为交互、调试和观测工具。**
+> **可运行、可扩展、可替换、可调试、可观测、可评测的 AI Engineering Platform。**
 
-整体重点：
+## 3. 项目原则
+
+### 3.1 AI First
+
+项目核心始终围绕：
 
 ```text
-AI / LLM              ★★★★★
-AI Engineering        ★★★★★
-Backend Engineering   ★★★★☆
-Data / Infra          ★★★☆☆
-Frontend              ★★☆☆☆
-DevOps                ★★☆☆☆
+LLM
+RAG
+Agent
+Evaluation
+Observability
 ```
 
-目标是：
+前端、数据库、部署等工程能力服务于 AI 系统，而不是让项目演化成普通 CRUD 系统。
 
-> **AI Engineer 会做的全栈，而不是 Full-stack Engineer 顺便调用 LLM。**
+### 3.2 Vertical Slice First
 
----
+开发过程中优先完成：
 
-## 2. 项目目标
+> **小而完整的纵向闭环**
 
-### 2.1 核心目标
+而不是同时铺开大量模块。
 
-AetherLab 最终应支持：
+错误方式：
 
-1. 与不同 LLM 进行统一对话
-2. 接入本地模型和云端模型
-3. 使用 llama.cpp 运行 GGUF 本地模型
-4. 管理模型配置
-5. 创建和管理知识库
-6. 文档解析、切分和向量化
-7. 基于知识库进行 RAG 问答
-8. 实现 Hybrid Retrieval 与 Reranker
-9. 实现 Agent 与工具调用
-10. 保存 Conversation 和 Message
-11. 支持 Short-Term / Long-Term Memory
-12. 查看模型调用过程
-13. 查看 Retrieval / Rerank / Tool / Agent Trace
-14. 对 Model / RAG / Agent 进行评测
-15. 对性能和评测结果进行可视化
-16. 使用 Docker 进行工程化部署
+```text
+先创建 LLM/
+再创建 RAG/
+再创建 Agent/
+再创建 Eval/
+再创建 Trace/
+但都没有完整功能
+```
 
----
+推荐方式：
 
-### 2.2 工程目标
+```text
+一个 Provider
+↓
+一个 Chat API
+↓
+Streaming
+↓
+Minimal Frontend
+↓
+Trace
+↓
+Tests
+↓
+形成完整可演示闭环
+```
 
-项目需要体现：
+### 3.3 Understand Before Framework
 
-- 清晰的模块划分
-- 可替换的 LLM Provider
-- 可替换的 Embedding Provider
-- 可扩展 Tool System
-- 可扩展 RAG Pipeline
-- 数据持久化
-- 异步调用
-- 流式响应
-- REST API
-- SSE
-- 统一配置管理
-- 统一错误处理
-- Logging
-- Trace
-- 自动化测试
-- Docker
-- CI
-- 基础前端工程化
+核心能力优先理解和实现基础版本。
 
----
+例如：
 
-### 2.3 非目标
+```text
+Provider abstraction
+Retriever
+RAG pipeline
+Tool calling
+Agent loop
+```
 
-项目初期不追求：
+理解后再引入：
 
-- 从零训练大型语言模型
-- 自研推理引擎
-- 自研向量数据库
-- 超高并发
-- 分布式训练
-- 微服务化
-- Kubernetes
-- 复杂商业级前端
-- 重度 UI / 动画
-- 过早使用 Go / Rust 重写核心系统
+```text
+LangGraph
+高级 RAG 框架
+其他高层抽象
+```
 
-原则：
+### 3.4 Observable From Day One
 
-> 先完成一个结构清晰、可运行、可观测、可评测的 AI Engineering 系统，再逐步扩展。
+Observability 不放到项目后期。
 
----
+从第一条 LLM 调用链开始记录：
 
-## 3. 总体系统架构
+```text
+Provider
+Model
+Latency
+Status
+Error
+Prompt Tokens
+Completion Tokens
+Total Tokens
+Request ID
+Trace ID
+```
+
+后续再扩展到：
+
+```text
+Retrieval
+Rerank
+Tool Call
+Agent Step
+```
+
+### 3.5 Test Early
+
+测试不是最后补。
+
+每完成一个纵向功能，就增加对应测试。
+
+例如：
+
+```text
+Health Endpoint
+→ API Test
+
+Provider
+→ Provider Unit Test
+
+Chat
+→ Chat Integration Test
+
+RAG
+→ Retrieval Evaluation
+```
+
+### 3.6 Evaluatable
+
+任何重要 AI 模块修改后，都应能够回答：
+
+> 到底变好了还是变差了？
+
+### 3.7 Replaceable
+
+关键组件尽量通过接口解耦：
+
+```text
+LLM
+Embedding
+Retriever
+Reranker
+Vector Store
+Tool
+```
+
+### 3.8 Incremental
+
+项目演化顺序：
+
+```text
+Simple
+↓
+Usable
+↓
+Observable
+↓
+Evaluatable
+↓
+Scalable
+```
+
+避免过度设计。
+
+## 4. 总体架构愿景
 
 ```text
 ┌──────────────────────────────────────────────┐
@@ -168,11 +284,11 @@ AetherLab 最终应支持：
 └──────────────┘ └──────────────┘ └─────────────┘
 ```
 
----
+这张图描述的是最终架构愿景，不代表当前全部已经实现。
 
-## 4. 技术栈
+## 5. 技术栈
 
-### 4.1 核心语言
+### 5.1 核心语言
 
 ```text
 Python
@@ -180,22 +296,21 @@ TypeScript
 SQL
 ```
 
-Python 负责：
+### 5.2 Backend
 
-- LLM
-- RAG
-- Agent
-- Evaluation
-- Backend
-- Data Pipeline
+```text
+Python 3.13
+FastAPI
+Pydantic
+SQLAlchemy
+Alembic
+asyncio
+pytest
+Ruff
+uv
+```
 
-TypeScript 负责前端。
-
-SQL 负责关系型数据设计与查询。
-
----
-
-### 4.2 AI / ML
+### 5.3 AI / ML
 
 ```text
 PyTorch
@@ -205,15 +320,13 @@ Sentence Transformers
 PEFT
 ```
 
----
-
-### 4.3 LLM Runtime
+### 5.4 LLM Runtime
 
 初期：
 
 ```text
+OpenAI-compatible API
 llama.cpp
-OpenAI Compatible API
 ```
 
 可选：
@@ -228,22 +341,7 @@ Ollama
 vLLM
 ```
 
----
-
-### 4.4 Backend
-
-```text
-FastAPI
-Pydantic
-SQLAlchemy
-Alembic
-asyncio
-pytest
-```
-
----
-
-### 4.5 Database
+### 5.5 Database
 
 初期：
 
@@ -252,29 +350,14 @@ PostgreSQL
 pgvector
 ```
 
-后期根据需求增加：
+按需求后续增加：
 
 ```text
 Redis
 Qdrant
 ```
 
----
-
-### 4.6 Agent
-
-```text
-Custom Tool Calling Agent
-LangGraph
-```
-
-原则：
-
-> 先自己实现基础 Agent Loop，再使用 LangGraph 管理复杂 Workflow。
-
----
-
-### 4.7 Frontend
+### 5.6 Frontend
 
 ```text
 React
@@ -282,7 +365,7 @@ TypeScript
 Vite
 ```
 
-必要时增加：
+必要时：
 
 ```text
 React Router
@@ -291,1177 +374,30 @@ Zustand
 ECharts
 ```
 
-前端定位：
-
-> AI 系统的交互界面、Debug Console 和 Evaluation Dashboard。
-
----
-
-### 4.8 Engineering
+### 5.7 Engineering
 
 ```text
 Git
 GitHub
-Linux
 Docker
 Docker Compose
-pytest
 GitHub Actions
+VS Code
 ```
 
----
-
-## 5. LLM 模型层设计
-
-### 5.1 设计目标
-
-所有上层业务逻辑不直接依赖具体模型实现。
-
-统一抽象：
-
-```python
-class LLMProvider:
-    async def generate(...):
-        ...
-
-    async def chat(...):
-        ...
-
-    async def stream(...):
-        ...
-```
-
-实现：
-
-```text
-LLMProvider
-├── LlamaCppProvider
-├── OpenAIProvider
-├── OllamaProvider
-└── VLLMProvider
-```
-
----
-
-### 5.2 Provider Registry
-
-后续可加入：
-
-```text
-LLMRegistry
-```
-
-负责：
-
-```text
-register()
-get()
-list()
-health_check()
-```
-
----
-
-### 5.3 模型配置
-
-模型配置可包含：
-
-```text
-id
-name
-provider
-model_name
-base_url
-context_length
-temperature
-top_p
-max_tokens
-enabled
-created_at
-updated_at
-```
-
-敏感字段如 API Key 不得直接返回给前端。
-
----
-
-## 6. llama.cpp 集成设计
-
-本地模型不嵌入 FastAPI 进程。
-
-推荐结构：
-
-```text
-GGUF Model
-    │
-    ▼
-llama-server
-    │
-    ▼
-OpenAI Compatible API
-    │
-    ▼
-AetherLab Backend
-```
-
-AetherLab 与 llama.cpp 通过 HTTP 解耦。
-
-这样可以：
-
-- 独立启动或关闭模型
-- 更换不同 GGUF 模型
-- 使用不同 llama.cpp 参数
-- 独立 Benchmark
-- 不污染 Backend 进程
-
----
-
-### 6.1 社区 Web UI
-
-社区已有的 llama.cpp Web UI 可以继续使用。
-
-结构：
-
-```text
-                 llama.cpp
-                     │
-        ┌────────────┴────────────┐
-        │                         │
-        ▼                         ▼
-AetherLab Backend          Community Web UI
-```
-
-社区 Web UI 用于：
-
-- 快速测试模型
-- Prompt 测试
-- Sampling 参数测试
-- 临时模型对比
-
-AetherLab 自己的前端用于：
-
-- RAG
-- Agent
-- Evaluation
-- Trace
-- Knowledge Base
-- Model Management
-- 系统级调试
-
-二者定位不同，不冲突。
-
----
-
-## 7. Conversation 模块
-
-主要实体：
-
-```text
-Conversation
-Message
-Model
-```
-
-Conversation：
-
-```text
-id
-title
-model_id
-created_at
-updated_at
-```
-
-Message：
-
-```text
-id
-conversation_id
-role
-content
-token_count
-latency
-metadata
-created_at
-```
-
----
-
-### 7.1 对话流程
-
-```text
-User Message
-      │
-      ▼
-API Route
-      │
-      ▼
-ChatService
-      │
-      ├── Save User Message
-      │
-      ▼
-LLM Provider
-      │
-      ▼
-Streaming Response
-      │
-      ├── SSE → Frontend
-      │
-      └── Save Assistant Message
-```
-
-流式输出第一阶段优先：
-
-```text
-SSE
-```
-
-只有未来出现复杂双向实时通信时才考虑 WebSocket。
-
----
-
-## 8. RAG 系统设计
-
-### 8.1 文档处理流程
-
-```text
-Document
-   │
-   ▼
-Parser
-   │
-   ▼
-Cleaner
-   │
-   ▼
-Chunker
-   │
-   ▼
-Embedding
-   │
-   ▼
-Vector Store
-```
-
----
-
-### 8.2 查询流程
-
-```text
-Query
-  │
-  ▼
-Embedding
-  │
-  ▼
-Retriever
-  │
-  ▼
-Candidate Chunks
-  │
-  ▼
-Reranker
-  │
-  ▼
-Context Builder
-  │
-  ▼
-LLM
-  │
-  ▼
-Answer + Citation
-```
-
----
-
-### 8.3 Knowledge Base
-
-```text
-KnowledgeBase
-├── id
-├── name
-├── description
-├── embedding_model
-├── chunk_strategy
-├── created_at
-└── updated_at
-```
-
----
-
-### 8.4 Document
-
-```text
-Document
-├── id
-├── knowledge_base_id
-├── filename
-├── file_type
-├── file_size
-├── status
-├── checksum
-├── metadata
-└── created_at
-```
-
-状态：
-
-```text
-uploaded
-processing
-completed
-failed
-```
-
----
-
-### 8.5 Chunk
-
-```text
-Chunk
-├── id
-├── document_id
-├── content
-├── chunk_index
-├── token_count
-├── metadata
-└── embedding
-```
-
----
-
-### 8.6 Chunking
-
-第一阶段：
-
-```text
-Recursive Character Split
-```
-
-后续：
-
-```text
-Token-based Chunking
-Sentence Chunking
-Markdown-aware Chunking
-Semantic Chunking
-```
-
-支持：
-
-```text
-chunk_size
-chunk_overlap
-```
-
----
-
-### 8.7 Retrieval
-
-第一阶段：
-
-```text
-Vector Search
-```
-
-第二阶段：
-
-```text
-Vector Search
-+
-BM25
-```
-
-形成：
-
-```text
-Query
- ├──── Vector Retriever
- │
- └──── BM25 Retriever
-          │
-          ▼
-       Fusion
-          │
-          ▼
-       Reranker
-          │
-          ▼
-       Top Context
-```
-
----
-
-### 8.8 Reranker
-
-目标流程：
-
-```text
-Recall Top 30
-       │
-       ▼
-    Reranker
-       │
-       ▼
-     Top 5
-       │
-       ▼
-      LLM
-```
-
-可使用 Cross Encoder 或其他 Reranker。
-
----
-
-## 9. Agent 系统设计
-
-### 9.1 基础 Agent Loop
-
-```text
-User
- │
- ▼
-Agent
- │
- ▼
-LLM
- │
- ├── Final Answer
- │
- └── Tool Call
-        │
-        ▼
-       Tool
-        │
-        ▼
-    Observation
-        │
-        └──────► LLM
-```
-
----
-
-### 9.2 Agent State
-
-```text
-AgentState
-├── messages
-├── tool_calls
-├── tool_results
-├── context
-├── memory
-├── current_step
-└── metadata
-```
-
----
-
-### 9.3 执行限制
-
-必须支持：
-
-```text
-max_steps
-max_tool_calls
-timeout
-retry
-fallback
-error_handling
-```
-
-避免 Agent 无限循环。
-
----
-
-### 9.4 Workflow
-
-第一阶段：
-
-```text
-Custom Agent Loop
-```
-
-第二阶段：
-
-```text
-LangGraph
-```
-
-支持：
-
-```text
-State
-Node
-Edge
-Conditional Edge
-Checkpoint
-Human-in-the-loop
-```
-
----
-
-## 10. Tool System
-
-统一接口：
-
-```python
-class Tool:
-    name: str
-    description: str
-    input_schema: dict
-
-    async def execute(self, arguments):
-        ...
-```
-
-第一阶段：
-
-```text
-CalculatorTool
-DateTimeTool
-RAGTool
-```
-
-后续：
-
-```text
-SearchTool
-DatabaseTool
-PythonTool
-FileTool
-HTTPTool
-```
-
----
-
-### 10.1 Tool Registry
-
-```text
-ToolRegistry
-├── register()
-├── get()
-├── list()
-└── execute()
-```
-
-Agent 不直接创建 Tool。
-
----
-
-## 11. Memory 系统
-
-### 11.1 Short-Term Memory
-
-当前 Conversation Context。
-
-策略：
-
-```text
-message history
-truncate
-summary
-```
-
----
-
-### 11.2 Long-Term Memory
-
-后期加入：
-
-```text
-User Preference
-Important Fact
-Previous Task
-Project Context
-```
-
-使用 Embedding Retrieval 召回。
-
----
-
-## 12. Evaluation 系统
-
-项目必须能够回答：
-
-> 修改了模型、Prompt、Retriever、Reranker 或 Agent 以后，到底变好了还是变差了？
-
----
-
-### 12.1 Model Evaluation
-
-记录：
-
-```text
-TTFT
-Total Latency
-Tokens / Second
-Prompt Tokens
-Completion Tokens
-Total Tokens
-```
-
-本地模型额外记录：
-
-```text
-Model
-Quantization
-Context Size
-GPU Layers
-Memory Usage
-```
-
----
-
-### 12.2 RAG Evaluation
-
-```text
-Retrieval Recall
-MRR
-Hit Rate
-Context Precision
-Context Recall
-Answer Correctness
-Faithfulness
-```
-
----
-
-### 12.3 Agent Evaluation
-
-```text
-Task Success
-Tool Selection Accuracy
-Tool Call Count
-Step Count
-Failure Rate
-Latency
-Token Usage
-```
-
----
-
-### 12.4 Eval Dataset
-
-```text
-EvalDataset
-├── id
-├── name
-├── type
-└── description
-```
-
-```text
-EvalCase
-├── input
-├── expected_output
-├── expected_context
-├── metadata
-└── tags
-```
-
-每次执行生成：
-
-```text
-EvalRun
-```
-
----
-
-## 13. Trace / Observability
-
-每次 AI 请求产生一个 Trace。
-
-```text
-Trace
- │
- ├── LLM Call
- ├── Retrieval
- ├── Rerank
- ├── Tool Call
- └── Agent Step
-```
-
-记录：
-
-```text
-trace_id
-request_id
-conversation_id
-model
-prompt_tokens
-completion_tokens
-latency
-status
-error
-created_at
-```
-
----
-
-### 13.1 Agent Trace
-
-前端示例：
-
-```text
-Agent Run #42
-
-Step 1
-LLM → Search Tool
-
-Step 2
-Search → Result
-
-Step 3
-LLM → RAG Tool
-
-Step 4
-RAG → 5 Chunks
-
-Step 5
-LLM → Final Answer
-```
-
-Trace 同时承担：
-
-```text
-Debug
-Evaluation
-Demo
-```
-
----
-
-## 14. 数据库设计
-
-核心数据库：
-
-```text
-PostgreSQL
-```
-
-向量：
-
-```text
-pgvector
-```
-
-核心表规划：
-
-```text
-users
-
-models
-
-conversations
-messages
-
-knowledge_bases
-documents
-chunks
-
-agents
-agent_runs
-agent_steps
-
-tools
-tool_calls
-
-eval_datasets
-eval_cases
-eval_runs
-eval_results
-
-traces
-```
-
-第一阶段使用 PostgreSQL + pgvector，避免过早引入独立 Vector Database。
-
-后期再根据数据规模评估：
-
-```text
-Qdrant
-Milvus
-```
-
----
-
-## 15. Redis
-
-Redis 第一阶段不是强制依赖。
-
-后续可用于：
-
-```text
-Cache
-Rate Limit
-Session
-Task State
-Queue
-Distributed Lock
-```
-
-只有出现真实需求后再引入。
-
----
-
-## 16. 后端架构
-
-Backend 作为独立 Python Project。
-
-推荐结构：
-
-```text
-backend/
-├── app/
-│   ├── api/
-│   ├── core/
-│   ├── db/
-│   ├── models/
-│   ├── schemas/
-│   ├── repositories/
-│   ├── services/
-│   ├── llm/
-│   ├── rag/
-│   ├── agent/
-│   ├── eval/
-│   ├── observability/
-│   └── main.py
-│
-├── tests/
-└── pyproject.toml
-```
-
-其中：
-
-```text
-backend
-```
-
-是独立 Python 项目。
-
-```text
-app
-```
-
-是主要 Python package。
-
-因此 import 推荐：
-
-```python
-from app.core.config import settings
-from app.llm.base import LLMProvider
-from app.services.chat import ChatService
-```
-
----
-
-## 17. Backend 分层设计
-
-### 17.1 API Layer
-
-负责：
-
-```text
-参数解析
-参数校验
-鉴权
-调用 Service
-返回 Response
-```
-
-不得堆积复杂业务逻辑。
-
----
-
-### 17.2 Service Layer
-
-例如：
-
-```text
-ChatService
-RAGService
-AgentService
-KnowledgeService
-ModelService
-EvalService
-```
-
-负责业务流程编排。
-
----
-
-### 17.3 Repository Layer
-
-负责数据库访问。
-
-```text
-ConversationRepository
-MessageRepository
-DocumentRepository
-ModelRepository
-```
-
----
-
-### 17.4 Models
-
-数据库 ORM Model。
-
-例如：
-
-```python
-class Conversation(Base):
-    ...
-```
-
----
-
-### 17.5 Schemas
-
-Pydantic API 数据结构。
-
-例如：
-
-```python
-class ConversationCreate(BaseModel):
-    title: str
-```
-
----
-
-### 17.6 分层关系
-
-```text
-API Route
-    │
-    ▼
- Service
-    │
-    ▼
-Repository
-    │
-    ▼
- Database
-```
-
----
-
-## 18. API 初步设计
-
-### Chat
-
-```text
-POST   /api/v1/chat
-POST   /api/v1/chat/stream
-```
-
-### Conversation
-
-```text
-GET    /api/v1/conversations
-POST   /api/v1/conversations
-GET    /api/v1/conversations/{id}
-DELETE /api/v1/conversations/{id}
-GET    /api/v1/conversations/{id}/messages
-```
-
-### Model
-
-```text
-GET    /api/v1/models
-POST   /api/v1/models
-PATCH  /api/v1/models/{id}
-DELETE /api/v1/models/{id}
-POST   /api/v1/models/{id}/test
-```
-
-### Knowledge Base
-
-```text
-GET    /api/v1/knowledge-bases
-POST   /api/v1/knowledge-bases
-GET    /api/v1/knowledge-bases/{id}
-DELETE /api/v1/knowledge-bases/{id}
-```
-
-### Document
-
-```text
-POST   /api/v1/knowledge-bases/{id}/documents
-GET    /api/v1/documents/{id}
-DELETE /api/v1/documents/{id}
-```
-
-### RAG
-
-```text
-POST   /api/v1/rag/retrieve
-POST   /api/v1/rag/query
-```
-
-### Agent
-
-```text
-GET    /api/v1/agents
-POST   /api/v1/agents
-POST   /api/v1/agents/{id}/run
-GET    /api/v1/agent-runs/{id}
-```
-
-### Evaluation
-
-```text
-POST   /api/v1/evals
-POST   /api/v1/evals/{id}/run
-GET    /api/v1/eval-runs
-GET    /api/v1/eval-runs/{id}
-```
-
-### Health
-
-第一阶段首先实现：
-
-```text
-GET /health
-```
-
-返回：
-
-```json
-{
-  "status": "ok",
-  "service": "aetherlab"
-}
-```
-
----
-
-## 19. 前端设计
-
-前端页面规划：
-
-```text
-/
-├── Chat
-├── Knowledge
-├── Models
-├── Agents
-├── Evaluation
-├── Traces
-└── Settings
-```
-
----
-
-### 19.1 Chat
-
-支持：
-
-```text
-Conversation List
-Model Select
-Knowledge Base Select
-Agent Mode
-Streaming
-Markdown
-Code Block
-Citation
-```
-
----
-
-### 19.2 Knowledge
-
-展示：
-
-```text
-Knowledge Base
-Documents
-Processing Status
-Chunks
-Retrieval Test
-```
-
-用于直接调试 RAG。
-
----
-
-### 19.3 Models
-
-展示：
-
-```text
-Model Name
-Provider
-Context
-Status
-Latency
-Tokens/s
-```
-
-支持：
-
-```text
-Add Model
-Test Model
-Disable Model
-```
-
----
-
-### 19.4 Agents
-
-展示完整 Agent Run 和 Tool Calling 过程。
-
----
-
-### 19.5 Evaluation
-
-用于：
-
-```text
-Model Comparison
-RAG Evaluation
-Agent Evaluation
-Benchmark Result
-```
-
----
-
-### 19.6 Traces
-
-用于查看：
-
-```text
-LLM Call
-Retrieval
-Reranker
-Tool Call
-Agent Step
-Latency
-Token Usage
-Error
-```
-
----
-
-## 20. 项目目录结构
-
-### 20.1 当前推荐结构
+## 6. 当前推荐项目结构
 
 ```text
 AetherLab/
 │
 ├── backend/
-│   │
 │   ├── app/
-│   │   ├── api/
-│   │   ├── core/
 │   │   └── main.py
 │   │
 │   ├── tests/
-│   └── pyproject.toml
+│   ├── .python-version
+│   ├── pyproject.toml
+│   └── uv.lock
 │
 ├── frontend/
 │
@@ -1476,380 +412,168 @@ AetherLab/
 ├── .github/
 │   └── workflows/
 │
-├── .gitignore
+├── .vscode/
+│   ├── extensions.json
+│   ├── launch.json
+│   └── settings.json
+│
 ├── .env.example
+├── .gitignore
 ├── docker-compose.yml
 ├── README.md
 └── LICENSE
 ```
 
-项目初期不需要把所有未来模块的空文件全部创建出来。
-
-随着开发逐步增加：
-
-```text
-开始数据库
-→ app/db/
-
-开始 LLM Provider
-→ app/llm/
-
-开始 RAG
-→ app/rag/
-
-开始 Agent
-→ app/agent/
-
-开始 Eval
-→ app/eval/
-
-开始 Trace
-→ app/observability/
-```
-
 原则：
 
-> 目录跟着真实代码增长，而不是提前制造大量空结构。
+> 不提前创建大量空模块。
 
----
-
-## 21. 最终目标目录结构
+只有在真正开始对应功能时，才增加：
 
 ```text
-AetherLab/
-│
-├── backend/
-│   ├── app/
-│   │   ├── api/
-│   │   │   ├── routes/
-│   │   │   │   ├── chat.py
-│   │   │   │   ├── models.py
-│   │   │   │   ├── knowledge.py
-│   │   │   │   ├── agents.py
-│   │   │   │   └── evals.py
-│   │   │   └── dependencies.py
-│   │   │
-│   │   ├── core/
-│   │   │   ├── config.py
-│   │   │   ├── logging.py
-│   │   │   └── exceptions.py
-│   │   │
-│   │   ├── db/
-│   │   │   ├── session.py
-│   │   │   ├── base.py
-│   │   │   └── migrations/
-│   │   │
-│   │   ├── models/
-│   │   ├── schemas/
-│   │   ├── repositories/
-│   │   ├── services/
-│   │   │
-│   │   ├── llm/
-│   │   │   ├── base.py
-│   │   │   ├── registry.py
-│   │   │   ├── types.py
-│   │   │   └── providers/
-│   │   │       ├── llama_cpp.py
-│   │   │       ├── openai.py
-│   │   │       ├── ollama.py
-│   │   │       └── vllm.py
-│   │   │
-│   │   ├── rag/
-│   │   │   ├── parsers/
-│   │   │   ├── chunkers/
-│   │   │   ├── embeddings/
-│   │   │   ├── retrievers/
-│   │   │   └── rerankers/
-│   │   │
-│   │   ├── agent/
-│   │   │   ├── tools/
-│   │   │   ├── executor.py
-│   │   │   └── state.py
-│   │   │
-│   │   ├── eval/
-│   │   ├── observability/
-│   │   └── main.py
-│   │
-│   ├── tests/
-│   │   ├── unit/
-│   │   └── integration/
-│   │
-│   └── pyproject.toml
-│
-├── frontend/
-│   ├── src/
-│   │   ├── api/
-│   │   ├── components/
-│   │   ├── hooks/
-│   │   ├── pages/
-│   │   ├── stores/
-│   │   ├── types/
-│   │   └── App.tsx
-│   │
-│   ├── package.json
-│   └── vite.config.ts
-│
-├── docs/
-│   ├── design.md
-│   ├── architecture.md
-│   ├── api.md
-│   ├── database.md
-│   ├── rag.md
-│   ├── agent.md
-│   └── roadmap.md
-│
-├── scripts/
-├── data/
-│   └── .gitkeep
-├── docker/
-├── .github/
-│   └── workflows/
-├── .env.example
-├── .gitignore
-├── docker-compose.yml
-├── README.md
-├── LICENSE
-└── CONTRIBUTING.md
+app/core/
+app/api/
+app/services/
+app/repositories/
+app/llm/
+app/rag/
+app/agent/
+app/eval/
+app/observability/
 ```
 
----
+## 7. Backend 分层设计
 
-## 22. 配置设计
-
-真实环境配置：
+随着项目增长，Backend 逐步演化为：
 
 ```text
-.env
+app/
+├── api/
+├── core/
+├── db/
+├── models/
+├── schemas/
+├── repositories/
+├── services/
+├── llm/
+├── rag/
+├── agent/
+├── eval/
+├── observability/
+└── main.py
 ```
 
-示例配置：
+### 7.1 API Layer
+
+负责：
 
 ```text
-.env.example
+参数解析
+参数校验
+调用 Service
+返回 Response
 ```
+
+不堆积复杂业务逻辑。
+
+### 7.2 Service Layer
+
+负责业务流程。
 
 例如：
 
-```dotenv
-DATABASE_URL=
-REDIS_URL=
-LLAMA_CPP_BASE_URL=http://localhost:8080
-OPENAI_API_KEY=
-LOG_LEVEL=INFO
-UPLOAD_DIR=
+```text
+ChatService
+ModelService
+ConversationService
+RAGService
+AgentService
+EvalService
 ```
 
-禁止提交：
+### 7.3 Repository Layer
+
+负责数据库访问。
+
+### 7.4 Models
+
+SQLAlchemy ORM Model。
+
+### 7.5 Schemas
+
+Pydantic Request / Response Model。
+
+### 7.6 分层关系
 
 ```text
-API Key
-Password
-Secret
-Token
-Cookie
-Private Endpoint Credential
+API Route
+    │
+    ▼
+ Service
+    │
+    ▼
+Repository
+    │
+    ▼
+ Database
 ```
 
----
+## 8. 基础工程能力
 
-## 23. GitHub 与公开策略
+这些能力必须前移，而不是留到项目最后。
 
-AetherLab 采用公开仓库。
+### 8.1 Configuration
 
-建议公开：
+建立统一：
 
 ```text
-README.md
-LICENSE
+app/core/config.py
+```
+
+环境变量从：
+
+```text
+.env
+```
+
+读取。
+
+公开仓库只提交：
+
+```text
 .env.example
-.gitignore
-docker-compose.yml
-backend/
-frontend/
-docs/
-GitHub Actions
-公开测试代码
-公开示例数据
 ```
 
-不应公开：
+### 8.2 Logging
+
+从 Chat 第一版开始建立结构化日志。
+
+最少记录：
 
 ```text
-.env
-真实 API Key
-数据库密码
-Token
-Cookie
-个人数据
-真实用户数据
-本地模型文件
-大量测试数据
-日志
-缓存
-虚拟环境
-node_modules
-```
-
----
-
-### 23.1 `.gitignore`
-
-建议：
-
-```gitignore
-# Environment
-.env
-.env.*
-!.env.example
-
-# Python
-__pycache__/
-*.py[cod]
-*.egg-info/
-.pytest_cache/
-.mypy_cache/
-.ruff_cache/
-
-# Virtual environments
-.venv/
-venv/
-
-# IDE
-.idea/
-.vscode/
-
-# Node
-node_modules/
-frontend/dist/
-
-# Data
-data/*
-!data/.gitkeep
-
-# Logs
-*.log
-logs/
-
-# OS
-.DS_Store
-Thumbs.db
-
-# Secrets
-*.pem
-*.key
-
-# Database
-*.db
-*.sqlite
-*.sqlite3
-```
-
-重要：
-
-> 已经 commit 过的敏感信息不会因为后来加入 `.gitignore` 而自动从 Git 历史中消失。
-
-因此 Secret 从第一次提交开始就不得进入 Git。
-
----
-
-## 24. 文档与语言规范
-
-推荐：
-
-```text
-代码                         英文
-变量 / 函数 / 类名            英文
-文件名                       英文
-代码注释                     英文
-Commit Message              英文
-API / Log / Error Message   英文
-README.md                   英文为主
-docs/design.md              中文
-个人设计和学习文档             中文
-```
-
-原因：
-
-- 代码与主流开源生态保持一致
-- 方便搜索错误
-- 方便未来展示
-- 设计文档使用中文可以提高思考和维护效率
-
----
-
-## 25. README 与 Design 文档定位
-
-### README.md
-
-面向第一次访问仓库的人。
-
-主要包含：
-
-```text
-项目介绍
-核心特性
-架构概览
-Quick Start
-Roadmap
-Documentation
-```
-
----
-
-### docs/design.md
-
-面向项目开发。
-
-包含：
-
-```text
-系统架构
-技术选型
-模块划分
-数据库设计
-API
-RAG
-Agent
-Evaluation
-Observability
-开发阶段
-```
-
-设计文档建议公开，并与代码一起进行版本管理。
-
----
-
-## 26. Logging
-
-统一结构化 Logging。
-
-等级：
-
-```text
-DEBUG
-INFO
-WARNING
-ERROR
-CRITICAL
-```
-
-记录：
-
-```text
+timestamp
+level
 request_id
 trace_id
-model
-latency
-tokens
+route
 status
+latency
 error
 ```
 
----
+LLM 调用额外记录：
 
-## 27. Error Handling
+```text
+provider
+model
+prompt_tokens
+completion_tokens
+total_tokens
+```
 
-统一 API Error：
+### 8.3 Error Model
+
+统一 API Error 结构：
 
 ```json
 {
@@ -1859,146 +583,786 @@ error
 }
 ```
 
-禁止：
-
-```python
-try:
-    ...
-except:
-    pass
-```
-
-错误应该：
+Provider 层还需要逐步统一：
 
 ```text
-分类
-记录
-传播
-转换
-返回
+Timeout
+Authentication Error
+Rate Limit
+Invalid Request
+Provider Unavailable
+Generation Error
+Streaming Error
 ```
 
----
+### 8.4 Testing
 
-## 28. Testing
+从 Phase 0 开始。
 
-分为：
+包含：
 
 ```text
 Unit Test
+API Test
 Integration Test
 Evaluation Test
 ```
 
-Unit Test：
+当前首先补：
 
 ```text
-Chunker
-Retriever
-Tool
-Prompt Builder
-Parser
+GET /health
 ```
 
-Integration Test：
+测试。
+
+### 8.5 CI
+
+最小 GitHub Actions：
 
 ```text
-API
-Database
-LLM Provider
-RAG Pipeline
-Agent
+uv sync
+ruff check
+ruff format --check
+pytest
 ```
 
-Evaluation Test：
+每次 push / pull request 自动执行。
 
-```text
-RAG Recall
-Agent Success Rate
-Regression Evaluation
+## 9. LLM Provider 设计
+
+### 9.1 目标
+
+业务层不直接依赖 OpenAI、llama.cpp 或其他具体接口。
+
+统一抽象：
+
+```python
+class LLMProvider:
+    async def chat(...):
+        ...
+
+    async def stream(...):
+        ...
 ```
 
----
+### 9.2 第一阶段范围
 
-## 29. Docker
-
-最终使用：
-
-```text
-Docker Compose
-```
-
-结构：
-
-```text
-docker-compose
-├── backend
-├── frontend
-├── postgres
-├── redis
-└── optional services
-```
-
-llama.cpp 可以独立运行。
+**只实现一个 OpenAI-compatible Provider。**
 
 原因：
 
-- GPU Runtime 环境独立
-- 本地推理参数变化频繁
-- 与 Backend 解耦更清晰
+- llama.cpp 本身兼容 OpenAI API
+- 很多云服务也提供 OpenAI-compatible endpoint
+- 可以先验证 Provider abstraction
+- 避免过早实现多个重复 Provider
 
----
-
-## 30. 项目开发阶段
-
-### Phase 0：Project Bootstrap
-
-完成：
+第一阶段：
 
 ```text
-Git Repository
-GitHub Repository
-Basic Directory Structure
-.gitignore
-README
-Design Document
-Python Environment
-FastAPI
-GET /health
+OpenAICompatibleProvider
 ```
 
-第一版目标：
+即可支持：
 
 ```text
-GET /health
-```
-
-返回：
-
-```json
-{
-  "status": "ok",
-  "service": "aetherlab"
-}
-```
-
----
-
-### Phase 1：LLM Chat
-
-```text
-LLM Provider
 llama.cpp
-Cloud API
+部分 Cloud API
+未来其他兼容服务
+```
+
+### 9.3 Provider 能力
+
+后续需要显式描述 Provider Capability：
+
+```text
+Streaming
+Tool Calling
+Structured Output
+Vision
+Embeddings
+Usage Statistics
+Reasoning
+```
+
+不同模型不应假设具备完全相同能力。
+
+### 9.4 Provider 错误语义
+
+不同上游错误需要转换成 AetherLab 内部统一错误。
+
+## 10. Chat 系统设计
+
+第一条真正的纵向闭环：
+
+```text
+User
+↓
+Web UI
+↓
+POST /chat
+↓
+ChatService
+↓
+LLM Provider
+↓
+Streaming
+↓
+Frontend
+```
+
+### 10.1 Chat API
+
+第一阶段设计：
+
+```text
+POST /api/v1/chat
+POST /api/v1/chat/stream
+```
+
+其中：
+
+```text
+/chat/stream
+```
+
+使用 SSE。
+
+### 10.2 SSE
+
+第一阶段使用 SSE 而不是 WebSocket。
+
+需要逐步处理：
+
+```text
+client disconnect
+request cancellation
+timeout
+provider error
+stream interruption
+```
+
+### 10.3 Chat Trace
+
+从第一版 Chat 就记录：
+
+```text
+request_id
+trace_id
+provider
+model
+start_time
+end_time
+latency
+status
+error
+prompt_tokens
+completion_tokens
+```
+
+如果上游暂时不返回 Token Usage，则允许字段为空。
+
+## 11. Minimal Frontend
+
+第一阶段前端只做最小闭环。
+
+目标：
+
+```text
+输入消息
+↓
+发送 Chat Request
+↓
+显示 Streaming Response
+↓
+显示基本状态
+```
+
+不优先实现：
+
+```text
+复杂样式
+动画
+完整设置中心
+多页面 Dashboard
+```
+
+第一版 Chat UI 足够验证：
+
+```text
+API
+Streaming
+Error
+Provider
+Latency
+```
+
+## 12. Conversation Persistence
+
+在 Chat 纵向闭环稳定后加入 PostgreSQL。
+
+主要实体：
+
+```text
 Conversation
 Message
-Streaming
-Chat UI
 ```
 
----
+### 12.1 Conversation
 
-### Phase 2：RAG
+```text
+id
+title
+model_id
+created_at
+updated_at
+```
+
+### 12.2 Message
+
+```text
+id
+conversation_id
+role
+content
+prompt_tokens
+completion_tokens
+latency
+metadata
+created_at
+```
+
+## 13. RAG 系统
+
+RAG 在 Chat + Persistence 闭环之后进入。
+
+### 13.1 Document Ingestion
+
+```text
+Document
+↓
+Parser
+↓
+Cleaner
+↓
+Chunker
+↓
+Embedding
+↓
+Vector Store
+```
+
+### 13.2 Query
+
+```text
+Query
+↓
+Embedding
+↓
+Retriever
+↓
+Candidate Chunks
+↓
+Reranker
+↓
+Context Builder
+↓
+LLM
+↓
+Answer + Citation
+```
+
+### 13.3 第一阶段范围
+
+只实现：
+
+```text
+Single Knowledge Base
+Simple Chunking
+Single Embedding Model
+Vector Search
+Top-K Retrieval
+Citation
+```
+
+不要第一版就加入：
+
+```text
+BM25
+Hybrid Search
+Query Rewrite
+Multi-Query
+Complex Reranking
+```
+
+### 13.4 文档摄取
+
+需要逐步加入：
+
+```text
+status
+checksum
+idempotency
+retry
+failure reason
+```
+
+避免相同文档重复摄取。
+
+### 13.5 Citation Traceability
+
+回答中的 Citation 必须能够追溯到：
+
+```text
+knowledge_base
+document
+chunk
+source metadata
+retrieval score
+```
+
+## 14. Advanced RAG
+
+基础 RAG 稳定后再加入：
+
+```text
+BM25
+Hybrid Search
+Fusion
+Reranker
+Query Rewrite
+Semantic Chunking
+RAG Evaluation
+```
+
+## 15. Agent 系统
+
+Agent 必须在 Chat 和 RAG 基础能力稳定后进入。
+
+### 15.1 Basic Agent Loop
+
+```text
+User
+↓
+LLM
+├── Final Answer
+└── Tool Call
+      ↓
+     Tool
+      ↓
+Observation
+      ↓
+     LLM
+```
+
+### 15.2 Tool System
+
+统一：
+
+```python
+class Tool:
+    name: str
+    description: str
+    input_schema: dict
+
+    async def execute(self, arguments):
+        ...
+```
+
+第一批 Tool：
+
+```text
+CalculatorTool
+DateTimeTool
+RAGTool
+```
+
+### 15.3 Agent Execution Limits
+
+必须支持：
+
+```text
+max_steps
+max_tool_calls
+timeout
+retry
+fallback
+```
+
+### 15.4 LangGraph
+
+第一阶段 Agent Loop 自己实现。
+
+复杂 Workflow 再引入：
+
+```text
+LangGraph
+```
+
+## 16. Evaluation
+
+Evaluation 不再被视为最后独立追加的模块。
+
+它分阶段伴随各功能增长。
+
+### 16.1 Chat / Model
+
+记录：
+
+```text
+TTFT
+Total Latency
+Tokens / Second
+Prompt Tokens
+Completion Tokens
+Total Tokens
+Error Rate
+```
+
+### 16.2 RAG
+
+记录：
+
+```text
+Hit Rate
+Recall
+MRR
+Context Precision
+Context Recall
+Faithfulness
+Answer Correctness
+```
+
+### 16.3 Agent
+
+记录：
+
+```text
+Task Success
+Tool Selection Accuracy
+Tool Call Count
+Step Count
+Failure Rate
+Latency
+Token Usage
+```
+
+### 16.4 Versioning
+
+后续应给以下对象增加版本概念：
+
+```text
+Prompt
+Model Config
+Retriever Config
+Reranker Config
+Eval Dataset
+Agent Config
+```
+
+否则不同评测结果不可复现。
+
+## 17. Observability
+
+Observability 是横跨整个项目的能力。
+
+### 17.1 Trace
+
+```text
+Trace
+├── LLM Call
+├── Retrieval
+├── Rerank
+├── Tool Call
+└── Agent Step
+```
+
+### 17.2 Trace 最小字段
+
+```text
+trace_id
+request_id
+status
+start_time
+end_time
+latency
+error
+```
+
+LLM：
+
+```text
+provider
+model
+prompt_tokens
+completion_tokens
+```
+
+Retrieval：
+
+```text
+query
+top_k
+document_id
+chunk_id
+score
+```
+
+Tool：
+
+```text
+tool_name
+arguments
+status
+latency
+```
+
+## 18. Security
+
+第一阶段不做复杂多租户系统，但设计时必须避免未来无法扩展。
+
+需要逐步考虑：
+
+```text
+API Key storage
+Authentication
+Authorization
+Sensitive log filtering
+Data isolation
+Upload validation
+Prompt injection
+Tool permission boundaries
+```
+
+API Key 不得：
+
+```text
+明文返回给前端
+写入日志
+提交 Git
+```
+
+## 19. llama.cpp 集成
+
+推荐：
+
+```text
+GGUF
+↓
+llama-server
+↓
+OpenAI-compatible API
+↓
+AetherLab Backend
+```
+
+llama.cpp 独立于 FastAPI 进程。
+
+### 19.1 社区 Web UI
+
+可以同时使用：
+
+```text
+                 llama.cpp
+                     │
+        ┌────────────┴────────────┐
+        │                         │
+        ▼                         ▼
+AetherLab Backend          Community Web UI
+```
+
+Community Web UI：
+
+```text
+模型测试
+Prompt 测试
+Sampling 参数调试
+```
+
+AetherLab：
+
+```text
+Chat
+RAG
+Agent
+Eval
+Trace
+Knowledge
+```
+
+## 20. GitHub 与公开策略
+
+AetherLab 使用公开仓库。
+
+公开：
+
+```text
+README.md
+LICENSE
+.env.example
+.gitignore
+.gitattributes
+.editorconfig
+docker-compose.yml
+.vscode 项目级共享配置
+backend/
+frontend/
+docs/
+tests/
+GitHub Actions
+公开示例数据
+```
+
+不公开：
+
+```text
+.env
+API Key
+Password
+Token
+Cookie
+真实用户数据
+本地模型文件
+日志
+缓存
+.venv
+node_modules
+大量本地数据
+```
+
+## 21. 代码与文档语言规范
+
+```text
+代码                         英文
+变量 / 函数 / 类名            英文
+文件名                       英文
+正式代码注释                  英文
+Docstring                    英文
+Commit Message              英文
+API / Log / Error Message   英文
+README.md                   英文为主
+docs/design.md              中文
+开发临时注释                  可中文
+```
+
+开发过程中允许临时中文注释。
+
+提交前将需要长期保留的注释整理成简洁英文。
+
+## 22. Python 代码规范
+
+命名：
+
+```text
+文件名          snake_case.py
+变量            snake_case
+函数            snake_case
+类              PascalCase
+常量            UPPER_SNAKE_CASE
+私有成员        _leading_underscore
+```
+
+要求：
+
+- 尽量使用类型注解
+- 公共函数和类使用 Docstring
+- 普通注释解释 Why，而不是重复 What
+- Ruff 负责格式化和 Lint
+- pytest 负责测试
+
+## 23. 执行路线图
+
+### Phase 0 — Bootstrap
+
+目标：
+
+> 建立可靠的最小开发基础。
+
+#### 已完成
+
+- Git Repository
+- GitHub Repository
+- Basic Directory Structure
+- Design Document
+- VS Code Workspace Config
+- uv
+- Python 3.13
+- Ruff
+- pytest dependency
+- FastAPI
+- `GET /health`
+
+#### 接下来补齐
+
+- README
+- `.env.example`
+- `.gitattributes`
+- `.editorconfig`
+- Health API Test
+- Minimal GitHub Actions CI
+- Basic Config
+- Basic Logging
+- Basic Error Model
+
+完成条件：
+
+```text
+clone repo
+↓
+uv sync
+↓
+tests pass
+↓
+CI pass
+↓
+backend starts
+↓
+/health works
+```
+
+### Phase 1 — First Vertical Chat Slice
+
+只做一条完整链路。
+
+```text
+OpenAI-compatible Provider
+↓
+Chat API
+↓
+SSE Streaming
+↓
+Minimal React Chat UI
+↓
+Request Trace
+↓
+Latency / Token / Error Metrics
+↓
+Tests
+```
+
+完成条件：
+
+> 用户可以通过 Web UI 发送消息，模型流式返回回答，同时后端能够记录请求状态、耗时和基础 Usage。
+
+### Phase 2 — Conversation Persistence
+
+加入：
+
+```text
+PostgreSQL
+SQLAlchemy
+Alembic
+Conversation
+Message
+```
+
+完成条件：
+
+> 刷新页面后历史对话仍然存在。
+
+### Phase 3 — Basic RAG
+
+加入：
 
 ```text
 Knowledge Base
@@ -2006,27 +1370,32 @@ Document Upload
 Parser
 Chunker
 Embedding
-Vector Search
-RAG
+pgvector
+Vector Retrieval
 Citation
-Retrieval Debug UI
+RAG Test
 ```
 
----
+完成条件：
 
-### Phase 3：Advanced RAG
+> 用户可以上传文档，并通过 Chat 基于文档回答，同时引用可追溯到具体 Chunk。
+
+### Phase 4 — Advanced RAG
+
+加入：
 
 ```text
 BM25
 Hybrid Search
+Fusion
 Reranker
 Query Rewrite
 RAG Evaluation
 ```
 
----
+### Phase 5 — Agent
 
-### Phase 4：Agent
+加入：
 
 ```text
 Tool Calling
@@ -2036,9 +1405,9 @@ Agent State
 Agent Trace
 ```
 
----
+### Phase 6 — Agent Workflow
 
-### Phase 5：Agent Workflow
+加入：
 
 ```text
 LangGraph
@@ -2046,66 +1415,51 @@ Workflow
 Planning
 Memory
 Checkpoint
+Human-in-the-loop
 ```
 
----
+### Phase 7 — Evaluation Platform
 
-### Phase 6：Evaluation
+把之前分散的 Evaluation 能力整合为平台：
 
 ```text
 Eval Dataset
 Eval Runner
-Model Eval
-RAG Eval
-Agent Eval
-Comparison Dashboard
-```
-
----
-
-### Phase 7：Observability
-
-```text
-Trace
-Metrics
-Token Usage
-Latency
-Error Analysis
+Model Comparison
+RAG Evaluation
+Agent Evaluation
+Regression Evaluation
 Dashboard
 ```
 
----
+### Phase 8 — Scaling & Engineering Expansion
 
-### Phase 8：Engineering
+只有真实需求出现后再进入：
 
 ```text
-Docker
-CI
-Test
-Security
-Configuration
-Documentation
-Deployment
+Redis
+Qdrant
+vLLM
+Advanced Cache
+Background Task Queue
+Go Gateway
+Distributed Service
+Deployment Optimization
 ```
 
----
-
-## 31. Go / Rust 的定位
+## 24. Go / Rust 定位
 
 第一阶段不使用。
 
-主要延迟通常来自：
+后期如果出现：
 
 ```text
-Model Inference
-Network
-Vector Search
-Database
+高并发 Gateway
+Streaming Service
+独立基础设施服务
 ```
 
-而不是 Python 本身。
-
-后期可以把项目演化成：
+可以尝试：
 
 ```text
 Python AI Core
@@ -2114,192 +1468,28 @@ Python AI Core
 Go Gateway
 ```
 
-或者使用 Go 重写：
+Go / Rust 是：
+
+> 后期工程重构和性能实验方向，而不是初始依赖。
+
+## 25. 项目成功标准
+
+AetherLab 的成功不以“目录多”或“功能列表长”为标准。
+
+真正的衡量标准是：
 
 ```text
-API Gateway
-Concurrent Service
-Streaming Service
+能运行
+能测试
+能观测
+能评测
+能解释
+能演示
+能扩展
 ```
 
-Go / Rust 的定位是：
+每一个阶段都应该产生一个真正可运行的纵向闭环。
 
-> 后期工程重构与性能实验，而不是项目初始依赖。
+最终 AetherLab 应成为：
 
----
-
-## 32. 项目设计原则
-
-### 32.1 AI First
-
-核心始终是：
-
-```text
-LLM
-RAG
-Agent
-Evaluation
-Observability
-```
-
----
-
-### 32.2 Understand Before Framework
-
-先自己实现基础能力，再使用框架。
-
-```text
-Retriever
-RAG
-Tool Calling
-Agent Loop
-```
-
-理解之后再引入：
-
-```text
-LangGraph
-其他高层框架
-```
-
----
-
-### 32.3 Observable
-
-不能只得到：
-
-```text
-Answer
-```
-
-还要能够知道：
-
-```text
-使用了哪个模型
-检索了什么
-Reranker 如何排序
-调用了什么 Tool
-Agent 走了哪些 Step
-耗时是多少
-Token 使用多少
-哪里失败了
-```
-
----
-
-### 32.4 Evaluatable
-
-任何 AI 模块修改后，都应能够量化比较。
-
----
-
-### 32.5 Replaceable
-
-关键组件应尽量可替换：
-
-```text
-LLM
-Embedding
-Retriever
-Reranker
-Vector Store
-Tool
-```
-
----
-
-### 32.6 Incremental
-
-演化顺序：
-
-```text
-Simple
- ↓
-Usable
- ↓
-Observable
- ↓
-Evaluatable
- ↓
-Scalable
-```
-
-避免过度设计。
-
----
-
-## 33. 项目最终形态
-
-```text
-                       AetherLab
-
-┌─────────────────────────────────────────────────────────┐
-│                         Web UI                          │
-│                                                       │
-│ Chat │ Knowledge │ Agent │ Evaluation │ Trace │ Model │
-└────────────────────────────┬────────────────────────────┘
-                             │
-                          FastAPI
-                             │
-       ┌─────────────────────┼─────────────────────┐
-       │                     │                     │
-       ▼                     ▼                     ▼
-     LLM                   RAG                   Agent
-       │                     │                     │
-       │              ┌──────┼───────┐            │
-       │              │      │       │            │
-       │           Vector   BM25  Reranker        Tool
-       │                                          │
-       └──────────────────┬───────────────────────┘
-                          │
-                         Eval
-                          │
-                         Trace
-                          │
-          ┌───────────────┼───────────────┐
-          ▼               ▼               ▼
-      PostgreSQL        pgvector         Redis
-```
-
-AetherLab 最终应同时体现：
-
-### AI 原理能力
-
-```text
-Transformer
-Embedding
-RAG
-Agent
-LLM Inference
-```
-
-### AI Engineering 能力
-
-```text
-LLM Integration
-RAG Pipeline
-Agent Workflow
-Evaluation
-Observability
-```
-
-### Software Engineering 能力
-
-```text
-Backend
-Database
-API
-Async
-Testing
-Docker
-Frontend
-Git / GitHub
-```
-
-最终目标不是一个普通的：
-
-> “LLM 聊天网站”
-
-而是一个：
-
-> **可运行、可扩展、可调试、可评测、可展示的 AI Engineering Platform。**
+> **一个能够真实展示 AI Engineering 能力，而不是停留在架构设计层面的完整工程项目。**
