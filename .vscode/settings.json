@@ -5,6 +5,8 @@
     "backend/tests"
   ],
 
+  "ruff.nativeServer": "on",
+
   "[python]": {
     "editor.defaultFormatter": "charliermarsh.ruff",
     "editor.formatOnSave": true,
