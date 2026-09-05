@@ -5,11 +5,13 @@ description = "Backend service for AetherLab AI Engineering Platform"
 requires-python = ">=3.13,<3.14"
 dependencies = [
     "fastapi>=0.141.1",
+    "pydantic-settings>=2.15.0",
     "uvicorn[standard]>=0.52.4",
 ]
 
 [dependency-groups]
 dev = [
+    "httpx2>=2.12.0",
     "pytest>=9.1.1",
     "ruff>=0.16.6",
 ]
@@ -42,3 +44,7 @@ convention = "google"
 quote-style = "double"
 indent-style = "space"
 line-ending = "lf"
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]
