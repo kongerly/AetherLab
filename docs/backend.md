@@ -13,8 +13,9 @@
 GET /health
 ```
 
-当前还没有配置模块、数据库、LLM Provider、Chat API、SSE、统一错误模型或结构化日志。
-本文件后续章节描述的是逐步实现时应遵守的设计边界，不代表对应能力已经存在。
+已实现环境配置、JSON 应用日志、HTTP 请求关联、统一错误响应及自动化测试。
+尚未实现数据库、LLM Provider、Chat API、SSE、Trace ID 或 Token Usage。
+后续章节中关于这些能力的内容仍是设计约束。
 
 ## 2. 目录演化
 
@@ -23,7 +24,18 @@ GET /health
 ```text
 backend/
 ├── app/
-│   └── main.py
+│   ├── main.py
+│   ├── api/routes/health.py
+│   └── core/
+│       ├── config.py
+│       ├── exceptions.py
+│       ├── logging.py
+│       └── middleware.py
+├── tests/
+│   ├── test_health.py
+│   ├── test_config.py
+│   └── test_http_foundation.py
+├── .env.example
 ├── .python-version
 ├── pyproject.toml
 └── uv.lock
@@ -105,7 +117,17 @@ Database / Model Runtime
 
 ## 4. Configuration
 
-配置应集中在 `app/core/config.py`，从环境变量读取，并满足：
+配置已集中在 `app/core/config.py`，使用 `pydantic-settings`，启动时校验。
+从 `backend/` 启动时读取该目录的 `.env`；环境变量优先于 dotenv，dotenv 优先于默认值。
+模板为 `backend/.env.example`；根目录模板仅作指引。
+
+| 配置 | 默认值 | 合法值 |
+| --- | --- | --- |
+| `APP_ENV` | `development` | `development`、`test`、`production` |
+| `LOG_LEVEL` | `INFO` | `DEBUG`、`INFO`、`WARNING`、`ERROR`、`CRITICAL` |
+
+`APP_ENV` 当前仅保存环境标记，不启用额外环境专属行为。
+后续扩展继续满足：
 
 - `.env.example` 只包含安全的变量名、说明和非敏感默认值。
 - `.env` 不提交 Git。
@@ -115,7 +137,18 @@ Database / Model Runtime
 
 ## 5. Logging 与 Request Context
 
-从第一条真实 Chat 链路开始使用结构化日志。HTTP 请求的最小字段为：
+当前 `app` logger 输出 JSON。HTTP 中间件为每个请求生成 UUID4，不复用客户端
+`X-Request-ID`，并写入响应同名头、`request.state.request_id` 与 ContextVar。
+错误响应和请求完成日志使用同一个 ID，请求结束后恢复上下文。
+
+当前请求完成日志包含 `timestamp`、`level`、`logger`、`message`、`request_id`、
+`method`、`route`、`status`、`latency_ms`、`error`。`route` 只记录路由模板，
+未匹配时为 `<unmatched>`；不记录原始 URL、请求头、正文或异常文本。
+普通完成日志为 INFO，5xx 或未处理异常为 ERROR；配置更高日志等级会过滤相应记录。
+启动命令使用 `--no-access-log`，避免 Uvicorn 另行输出原始 URL；其生命周期日志保持默认格式。
+此策略不自动净化未来业务代码主动写入的日志消息，调用者仍须遵守数据安全约束。
+
+Phase 1 再补充 Trace ID 和 LLM 调用记录，目标 HTTP 字段为：
 
 ```text
 timestamp
@@ -147,7 +180,22 @@ total_tokens
 
 ## 6. Error Model
 
-外部 API 使用统一、稳定的错误结构，例如：
+当前外部错误响应统一包含 `code`、`message`、`request_id`：
+
+| 情况 | HTTP 状态 | code |
+| --- | --- | --- |
+| 路由不存在 | 404 | `NOT_FOUND` |
+| 方法不支持 | 405 | `METHOD_NOT_ALLOWED` |
+| 请求参数校验失败 | 422 | `VALIDATION_ERROR` |
+| `ResourceNotFoundError` | 404 | `RESOURCE_NOT_FOUND` |
+| 发送响应头前的未处理异常 | 500 | `INTERNAL_SERVER_ERROR` |
+
+其他 HTTP 异常使用标准 HTTP 状态名称作为 code，非标准状态使用 `HTTP_ERROR`。
+响应保留 `Allow`、`WWW-Authenticate` 等协议头。message 使用固定英文文本，
+不回显异常正文或校验输入；500 不返回堆栈。响应头发送后的异常不能改写为 JSON，
+会记录错误并向服务器传播；SSE 的取消、中断和错误事件契约在 Phase 1 实现。
+
+未来 Provider 错误也遵循这一结构，例如：
 
 ```json
 {

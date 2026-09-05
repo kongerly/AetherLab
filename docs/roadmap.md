@@ -11,32 +11,27 @@
 Pre-Alpha / Phase 0
 ```
 
-AetherLab 已经明确方向和架构，但实际功能仍处于最早期工程脚手架阶段。
+Phase 0 后端实现与本地验证已完成，远端 CI 验收待确认；Phase 1 尚未开始。
 
 ### 1.1 已完成
 
-- Git / GitHub 仓库初始化
-- 基础目录结构
-- 分职责项目文档
-- 公开的 `AGENTS.md` AI 协作规范
-- VS Code 项目级配置
-- uv Python 环境管理
-- Python 3.13
-- Ruff 代码规范
-- pytest 开发依赖
-- FastAPI 基础应用
-- `GET /health`
-- Swagger / OpenAPI 基础验证
+- Git / GitHub 仓库初始化、基础目录、分职责文档与公开 `AGENTS.md`
+- VS Code 项目级配置、uv 锁文件、Python 3.13、Ruff 与 pytest
+- FastAPI 应用、`GET /health` 与 OpenAPI
+- `backend/.env.example` 与环境变量配置校验
+- JSON 应用日志、请求完成日志、耗时与服务端生成的 Request ID
+- HTTP、参数校验、自定义资源缺失及未处理异常的统一错误响应
+- Health API、配置、错误契约、日志脱敏与并发上下文隔离测试
+- Minimal GitHub Actions CI：锁定依赖同步、Lint、Format Check、Test
 
-### 1.2 Phase 0 待完成
+### 1.2 Phase 0 验收状态
 
-- `.env.example` 正式内容
-- Docker Compose 服务定义
-- Health API 自动化测试
-- Minimal GitHub Actions CI
-- 配置管理
-- 结构化日志
-- 统一错误模型
+- `uv sync --frozen`、本地 Ruff、Format Check 和 13 项测试通过。
+- 真实 Uvicorn 启动、`/health`、OpenAPI 和响应／日志 Request ID 关联验证通过。
+- 远端 GitHub Actions 结果尚未核验，不能宣称完整 CI 验收通过。
+- Docker Compose 当前无服务需求，保留空文件；按本阶段“实际需要时填写”的原则，
+  不将容器化作为本轮完成条件。后续引入模型运行时或数据库时再评估。
+- 当前只提供 HTTP 请求关联；Trace ID、LLM Usage 和流式生命周期处理留到 Phase 1。
 
 ### 1.3 尚未进入实现
 
@@ -60,6 +55,8 @@ AetherLab 已经明确方向和架构，但实际功能仍处于最早期工程�
 ## 3. Phase 0 — Bootstrap
 
 目标：建立可靠的最小开发基础。
+
+状态：实现及本地检查已完成，待远端 CI 通过后关闭阶段验收。
 
 ### 工作内容
 

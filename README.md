@@ -4,8 +4,9 @@ AetherLab is a modular AI engineering platform for experimenting with and buildi
 LLM inference, RAG, agents, evaluation, and observability workflows.
 
 > **Status:** Pre-Alpha / Phase 0. The project currently provides an initial FastAPI
-> backend and a health endpoint. Most platform capabilities described in the design
-> document are planned and are not implemented yet.
+> backend foundation with tested health checks, configuration, JSON request logs,
+> correlated error responses, and a CI workflow. Phase 0 implementation is complete;
+> remote CI validation is pending. AI platform capabilities remain planned.
 
 ## Available Today
 
@@ -13,7 +14,11 @@ LLM inference, RAG, agents, evaluation, and observability workflows.
 - FastAPI application with OpenAPI documentation
 - `GET /health` health check
 - Ruff linting and formatting configuration
-- pytest development dependency
+- Health, configuration, error-contract, and request-context tests
+- Validated environment configuration and a backend dotenv template
+- JSON application logs and server-generated `X-Request-ID` response headers
+- Consistent HTTP, validation, domain, and unexpected-error responses
+- GitHub Actions backend checks on relevant pushes and pull requests
 - Shared VS Code workspace settings
 - Architecture, roadmap, backend, and engineering documentation
 
@@ -46,17 +51,28 @@ Docker Compose, the frontend, and external model services are not configured yet
 
 ## Quick Start
 
-Install the backend dependencies:
+Install the locked backend dependencies:
 
 ```bash
 cd backend
-uv sync
+uv sync --frozen
 ```
+
+Defaults work without a dotenv file. For local overrides, copy
+`backend/.env.example` to `backend/.env` and set:
+
+| Variable | Default | Allowed values |
+| --- | --- | --- |
+| `APP_ENV` | `development` | `development`, `test`, `production` |
+| `LOG_LEVEL` | `INFO` | `DEBUG`, `INFO`, `WARNING`, `ERROR`, `CRITICAL` |
+
+Environment variables override dotenv values. Invalid values fail at startup.
+Run commands from `backend/`; the root `.env.example` only points to the backend template.
 
 Start the development server:
 
 ```bash
-uv run uvicorn app.main:app --reload
+uv run uvicorn app.main:app --reload --no-access-log
 ```
 
 The service is available at:
@@ -80,6 +96,19 @@ Expected response:
 }
 ```
 
+Every HTTP response includes a new server-generated `X-Request-ID`. Incoming request
+IDs are not reused. Application logs use JSON with the same ID, route template,
+status, elapsed milliseconds, and error code. Unknown routes are logged as
+`<unmatched>`; raw paths, query strings, request bodies, and exception text are omitted.
+Keep `--no-access-log` to prevent Uvicorn's separate access logger from logging raw URLs.
+Uvicorn lifecycle logs retain their standard format. `LOG_LEVEL` controls application
+logs; levels above `INFO` suppress ordinary request completion logs.
+
+Errors use `{ "code": "...", "message": "...", "request_id": "..." }`, including
+404, 405, validation failures, and unexpected failures before response headers are sent.
+Error messages are fixed and do not expose input values or exception details.
+Streaming lifecycle handling and distributed tracing belong to Phase 1.
+
 ## Development Checks
 
 Run these commands from `backend/`:
@@ -90,8 +119,10 @@ uv run ruff format --check .
 uv run pytest
 ```
 
-The repository does not have automated tests yet. `pytest` may report that no tests were
-collected until the first test suite is added.
+Tests cover health responses, configuration validation, error contracts, request ID
+correlation, concurrent context isolation, and sanitized JSON logs. Tests use no model
+services or API keys. CI synchronizes dependencies with `uv sync --frozen` before
+running the same lint, format, and test checks.
 
 ## Repository Structure
 
@@ -106,10 +137,10 @@ AetherLab/
 |   `-- engineering.md   Repository workflow and quality standards
 |-- scripts/             Project automation
 |-- data/                Ignored local runtime data
-|-- .github/             Repository automation and future CI
+|-- .github/             Repository automation and backend CI
 |-- AGENTS.md            Public AI-assisted development guidelines
-|-- .env.example         Public environment-variable template (currently empty)
-|-- docker-compose.yml   Future local service definitions (currently empty)
+|-- .env.example         Pointer to backend/.env.example
+|-- docker-compose.yml   Reserved; no services needed for Phase 0
 `-- README.md
 ```
 
