@@ -20,7 +20,7 @@ evaluation, and observability. The repository is currently in Pre-Alpha / Phase 
 - `docs/`: design, roadmap, backend, and engineering documentation.
 - `scripts/`: project automation added only when a concrete need exists.
 - `data/`: local runtime data; only `.gitkeep` is tracked.
-- `.github/`: repository automation and future CI workflows.
+- `.github/`: repository automation and backend CI workflows.
 
 Do not create empty packages or speculative modules. Add a directory when the vertical
 slice that uses it is being implemented.
@@ -40,7 +40,7 @@ Run backend commands from `backend/`:
 
 ```bash
 uv sync
-uv run uvicorn app.main:app --reload
+uv run uvicorn app.main:app --reload --no-access-log
 uv run ruff check .
 uv run ruff format --check .
 uv run pytest

@@ -13,7 +13,11 @@
 AetherLab/
 ├── backend/
 │   ├── app/
-│   │   └── main.py
+│   │   ├── main.py
+│   │   ├── api/routes/health.py
+│   │   └── core/              # Config, errors, JSON logging, request middleware
+│   ├── tests/
+│   ├── .env.example
 │   ├── .python-version
 │   ├── pyproject.toml
 │   └── uv.lock
@@ -54,12 +58,15 @@ AetherLab/
 后端命令从 `backend/` 执行：
 
 ```bash
-uv sync
-uv run uvicorn app.main:app --reload
+uv sync --frozen
+uv run uvicorn app.main:app --reload --no-access-log
 uv run ruff check .
 uv run ruff format --check .
 uv run pytest
 ```
+
+配置模板在 `backend/.env.example`，可选复制为同目录 `.env`。关闭 Uvicorn access log，
+由应用 JSON 日志记录路由模板，避免原始 URL 中的敏感内容进入日志。
 
 开发者应使用 `uv.lock` 中锁定的版本。修改依赖时同时更新 `pyproject.toml` 与 `uv.lock`，并在
 提交中说明新增生产依赖的用途。
@@ -131,16 +138,18 @@ Agent           → Tool and Task Evaluation
 
 ## 6. Continuous Integration
 
-最小 GitHub Actions 流程应在 push 与 pull request 上执行：
+当前 `.github/workflows/backend-ci.yml` 在 push 与 pull request 修改 `backend/**`
+或该工作流时执行，使用 Python 3.13，并设置 `APP_ENV=test`、`LOG_LEVEL=INFO`：
 
 ```text
-uv sync
+uv sync --frozen
 ruff check
 ruff format --check
 pytest
 ```
 
-CI 应使用锁文件、固定 Python 版本并缓存依赖。只有在基础流程稳定后，再添加集成测试、构建、
+CI 使用锁文件、固定 Python 版本并缓存依赖。本地检查通过不等同于远端 CI 已通过，
+阶段验收须核对 GitHub Actions 的实际运行结果。只有在基础流程稳定后，再添加集成测试、构建、
 安全扫描或发布任务。
 
 ## 7. Git 与变更管理
