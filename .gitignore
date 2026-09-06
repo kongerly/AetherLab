@@ -43,7 +43,14 @@ Thumbs.db
 *.key
 
 # Local Codex instructions
-/AGENTS.override.md
+AGENTS.override.md
+
+# Local model weights
+*.gguf
+*.safetensors
+*.pt
+*.pth
+*.ckpt
 
 # Database
 *.db

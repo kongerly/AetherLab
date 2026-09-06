@@ -1,10 +1,10 @@
-"""Application exception definitions."""
+"""应用异常定义。"""
 
 from pydantic import BaseModel
 
 
 class ErrorResponse(BaseModel):
-    """Standard API error response."""
+    """统一的 API 错误响应结构。"""
 
     code: str
     message: str
@@ -12,8 +12,8 @@ class ErrorResponse(BaseModel):
 
 
 class AetherLabError(Exception):
-    """Base exception for AetherLab."""
+    """AetherLab 应用异常基类。"""
 
 
 class ResourceNotFoundError(AetherLabError):
-    """Raised when a requested resource does not exist."""
+    """请求的资源不存在时抛出的异常。"""

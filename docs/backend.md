@@ -225,7 +225,9 @@ Provider 层逐步统一以下错误语义：
 
 业务层不直接依赖 OpenAI、llama.cpp 或其他具体 SDK。统一接口至少覆盖普通生成和流式生成：
 
-```python
+以下为接口形状示意，并非可执行 Python 代码：
+
+```text
 class LLMProvider:
     async def chat(...):
         ...
@@ -333,8 +335,9 @@ Trace
 └── Agent Step
 ```
 
-Retrieval Span 记录 query、top_k、document_id、chunk_id 与 score；Tool Span 记录 tool_name、
-status 和 latency。Tool arguments 只有在完成敏感信息处理后才可记录。
+Retrieval Span 记录 top_k、document_id、chunk_id 与 score；Tool Span 记录 tool_name、
+status 和 latency。query 与 Tool arguments 默认不记录，仅在明确脱敏策略并完成敏感信息处理后
+才可记录；文档与分块标识也不得直接包含私人路径或用户原文。
 
 ## 11. Conversation Persistence
 

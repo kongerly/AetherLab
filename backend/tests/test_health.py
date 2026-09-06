@@ -1,4 +1,4 @@
-"""Tests for health check endpoint."""
+"""健康检查接口测试。"""
 
 from fastapi.testclient import TestClient
 
@@ -8,7 +8,7 @@ client = TestClient(app)
 
 
 def test_health() -> None:
-    """Return 200 and the expected health payload."""
+    """验证接口返回 200 状态码和预期的健康状态数据。"""
     response = client.get("/health")
 
     assert response.status_code == 200
