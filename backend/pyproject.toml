@@ -23,18 +23,19 @@ line-length = 100
 
 [tool.ruff.lint]
 select = [
-    "E",   # pycodestyle errors
+    "E",   # pycodestyle 错误检查
     "F",   # Pyflakes
-    "I",   # import sorting
+    "I",   # 导入排序
     "UP",  # pyupgrade
     "B",   # flake8-bugbear
-    "SIM", # simplify
-    "N",   # naming
-    "D",   # docstrings
+    "SIM", # 简化代码
+    "N",   # 命名规范
+    "D",   # 文档字符串
 ]
 
 ignore = [
-    "D100", # Do not require a module docstring in every file
+    "D100", # 不强制每个文件都有模块文档字符串
+    "D415", # 此规则不识别中文句末标点，中文文档字符串由人工检查标点
 ]
 
 [tool.ruff.lint.pydocstyle]

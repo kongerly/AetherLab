@@ -39,7 +39,7 @@ slice that uses it is being implemented.
 Run backend commands from `backend/`:
 
 ```bash
-uv sync
+uv sync --frozen
 uv run uvicorn app.main:app --reload --no-access-log
 uv run ruff check .
 uv run ruff format --check .
@@ -68,10 +68,12 @@ When changing backend behavior:
 
 ## Code and Documentation Language
 
-- Code, identifiers, filenames, persistent comments, docstrings, commit messages, API
-  messages, logs, and errors must be in English.
-- Keep `README.md` primarily in English.
-- Documents under `docs/` may remain in Chinese.
+- Keep code identifiers, filenames, API messages, logs, and errors in English.
+- Prefer Chinese for comments and docstring descriptions, including committed code.
+  Keep Google-style section labels such as `Args:`, `Returns:`, and `Raises:` in English.
+- Keep `README.md` and documents under `docs/` primarily in Chinese; retain established
+  English technical terms where useful.
+- Commit messages may use Chinese or English and should clearly explain the change.
 - Comments should explain why a decision exists, not restate the code.
 
 ## Security and Data

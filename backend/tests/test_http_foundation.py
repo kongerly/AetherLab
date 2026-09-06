@@ -1,4 +1,4 @@
-"""Behavioral checks for error contracts and request logging."""
+"""错误契约与请求日志的行为测试。"""
 
 import asyncio
 import io
@@ -20,7 +20,7 @@ from app.main import app
 
 @pytest.fixture
 def log_output() -> Iterator[io.StringIO]:
-    """Capture the actual JSON formatter output."""
+    """捕获 JSON 日志格式化器的实际输出。"""
     output = io.StringIO()
     handler = logging.StreamHandler(output)
     handler.setFormatter(JsonFormatter())
@@ -34,7 +34,7 @@ def log_output() -> Iterator[io.StringIO]:
 
 @pytest.fixture
 def client() -> Iterator[TestClient]:
-    """Use production error handlers with test-only failure routes."""
+    """使用正式错误处理器和仅用于测试的失败路由。"""
     test_app = FastAPI(exception_handlers=app.exception_handlers)
     test_app.add_middleware(RequestContextMiddleware)
 
@@ -78,7 +78,7 @@ def test_errors(
     code: str,
     message: str,
 ) -> None:
-    """Return safe correlated errors and log exactly one sanitized outcome."""
+    """验证错误响应安全且带有关联 ID，并且只记录一条脱敏后的请求结果。"""
     response = client.request(
         method,
         path + "?token=secret-query",
@@ -105,7 +105,7 @@ def test_errors(
 
 
 def test_health_correlation(log_output: io.StringIO) -> None:
-    """Generate fresh IDs and preserve the existing health response."""
+    """验证每次请求生成新 ID，并保持已有的健康检查响应内容。"""
     with TestClient(app) as client:
         first = client.get("/health")
         second = client.get("/health")
@@ -120,7 +120,7 @@ def test_health_correlation(log_output: io.StringIO) -> None:
 
 
 def test_concurrent_context_isolation(log_output: io.StringIO) -> None:
-    """Keep request IDs isolated across overlapping asynchronous requests."""
+    """验证并发异步请求之间的请求 ID 相互隔离。"""
 
     async def run() -> None:
         arrived = 0
@@ -156,7 +156,7 @@ def test_concurrent_context_isolation(log_output: io.StringIO) -> None:
 
 
 def test_logging_configuration_is_idempotent() -> None:
-    """Avoid duplicate output when application logging is configured again."""
+    """验证重复配置应用日志时不会重复输出。"""
     logger = logging.getLogger("app")
     original = list(logger.handlers)
     configure_logging()

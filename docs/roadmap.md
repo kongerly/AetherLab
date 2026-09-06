@@ -72,7 +72,7 @@ Phase 0 后端实现与本地验证已完成，远端 CI 验收待确认；Phase
 ```text
 clone repo
 ↓
-uv sync
+uv sync --frozen
 ↓
 tests pass
 ↓

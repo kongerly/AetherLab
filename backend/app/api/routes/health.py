@@ -1,4 +1,4 @@
-"""Health check routes."""
+"""健康检查路由。"""
 
 from fastapi import APIRouter
 
@@ -7,7 +7,7 @@ health_router = APIRouter(prefix="/health", tags=["Health"])
 
 @health_router.get("")
 async def health() -> dict[str, str]:
-    """Return the current health status of the backend service."""
+    """返回后端服务当前的健康状态。"""
     return {
         "status": "ok",
         "service": "aetherlab",

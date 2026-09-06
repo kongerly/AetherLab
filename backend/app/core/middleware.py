@@ -1,4 +1,4 @@
-"""Request correlation and HTTP completion logging."""
+"""请求关联与 HTTP 请求完成日志。"""
 
 import logging
 from time import perf_counter
@@ -15,14 +15,14 @@ logger = logging.getLogger(__name__)
 
 
 class RequestContextMiddleware:
-    """Assign server-generated request IDs and record sanitized HTTP outcomes."""
+    """分配服务端生成的请求 ID，并记录脱敏后的 HTTP 请求结果。"""
 
     def __init__(self, app: ASGIApp) -> None:
-        """Wrap the downstream application."""
+        """包装下游 ASGI 应用。"""
         self.app = app
 
     async def __call__(self, scope: Scope, receive: Receive, send: Send) -> None:
-        """Correlate a request, its response, and its completion log."""
+        """通过请求 ID 关联请求、响应及请求完成日志。"""
         if scope["type"] != "http":
             await self.app(scope, receive, send)
             return
@@ -47,7 +47,7 @@ class RequestContextMiddleware:
         except Exception:
             scope["state"]["error_code"] = "INTERNAL_SERVER_ERROR"
             if response_started:
-                # An already-started response cannot be replaced with a JSON error.
+                # 响应头已发送后，无法再将响应替换为 JSON 错误。
                 raise
             response = JSONResponse(
                 status_code=500,

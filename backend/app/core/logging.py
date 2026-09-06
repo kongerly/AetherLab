@@ -1,4 +1,4 @@
-"""JSON application logging with request context."""
+"""携带请求上下文的 JSON 应用日志。"""
 
 import json
 import logging
@@ -11,10 +11,10 @@ request_id_context: ContextVar[str | None] = ContextVar("request_id", default=No
 
 
 class JsonFormatter(logging.Formatter):
-    """Serialize approved log fields without exception bodies or arbitrary extras."""
+    """仅序列化允许的日志字段，排除异常详情和任意附加字段。"""
 
     def format(self, record: logging.LogRecord) -> str:
-        """Return a JSON log entry."""
+        """返回 JSON 格式的日志记录。"""
         payload = {
             "timestamp": datetime.fromtimestamp(record.created, UTC).isoformat(),
             "level": record.levelname,
@@ -29,7 +29,7 @@ class JsonFormatter(logging.Formatter):
 
 
 def configure_logging() -> None:
-    """Configure the application logger without changing third-party handlers."""
+    """配置应用日志记录器，保留第三方日志处理器的配置。"""
     logger = logging.getLogger("app")
     logger.setLevel(settings.log_level)
     logger.propagate = False

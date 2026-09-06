@@ -1,4 +1,4 @@
-"""AetherLab backend application entry point."""
+"""AetherLab 后端应用入口。"""
 
 import logging
 from http import HTTPStatus
@@ -29,7 +29,7 @@ def error_response(
     message: str,
     headers: dict[str, str] | None = None,
 ) -> JSONResponse:
-    """Build a correlated error response using safe, fixed messages."""
+    """使用安全的固定消息构建带请求 ID 的错误响应。"""
     request.state.error_code = code
     return JSONResponse(
         status_code=status,
@@ -42,13 +42,13 @@ def error_response(
 
 @app.exception_handler(ResourceNotFoundError)
 async def handle_resource_not_found(request: Request, _exc: ResourceNotFoundError) -> JSONResponse:
-    """Convert resource-not-found errors into HTTP responses."""
+    """将资源不存在异常转换为 HTTP 响应。"""
     return error_response(request, 404, "RESOURCE_NOT_FOUND", "Resource not found")
 
 
 @app.exception_handler(HTTPException)
 async def handle_http_error(request: Request, exc: HTTPException) -> JSONResponse:
-    """Normalize framework HTTP errors while preserving protocol headers."""
+    """统一框架的 HTTP 错误响应，并保留协议头。"""
     try:
         status = HTTPStatus(exc.status_code)
         code, message = status.name, status.phrase
@@ -59,5 +59,5 @@ async def handle_http_error(request: Request, exc: HTTPException) -> JSONRespons
 
 @app.exception_handler(RequestValidationError)
 async def handle_validation_error(request: Request, _exc: RequestValidationError) -> JSONResponse:
-    """Report invalid input without echoing user data."""
+    """报告输入校验失败，不回显用户数据。"""
     return error_response(request, 422, "VALIDATION_ERROR", "Request validation failed")
