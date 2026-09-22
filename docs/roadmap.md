@@ -8,10 +8,10 @@
 ## 1. 当前状态
 
 ```text
-Pre-Alpha / Phase 0
+Pre-Alpha / Phase 0 Complete
 ```
 
-Phase 0 后端实现与本地验证已完成，远端 CI 验收待确认；Phase 1 尚未开始。
+Phase 0 已完成并通过本地及远端 CI 验收；Phase 1 尚未开始，已具备启动条件。
 
 ### 1.1 已完成
 
@@ -28,7 +28,8 @@ Phase 0 后端实现与本地验证已完成，远端 CI 验收待确认；Phase
 
 - `uv sync --frozen`、本地 Ruff、Format Check 和 13 项测试通过。
 - 真实 Uvicorn 启动、`/health`、OpenAPI 和响应／日志 Request ID 关联验证通过。
-- 远端 GitHub Actions 结果尚未核验，不能宣称完整 CI 验收通过。
+- 最近一次涉及后端的 `main` 分支推送已通过 GitHub Actions Backend CI；结果于
+  2026-09-22 完成核验。
 - Docker Compose 当前无服务需求，保留空文件；按本阶段“实际需要时填写”的原则，
   不将容器化作为本轮完成条件。后续引入模型运行时或数据库时再评估。
 - 当前只提供 HTTP 请求关联；Trace ID、LLM Usage 和流式生命周期处理留到 Phase 1。
@@ -56,7 +57,7 @@ Phase 0 后端实现与本地验证已完成，远端 CI 验收待确认；Phase
 
 目标：建立可靠的最小开发基础。
 
-状态：实现及本地检查已完成，待远端 CI 通过后关闭阶段验收。
+状态：已完成。实现、本地检查、真实服务验证与远端 CI 均已通过验收。
 
 ### 工作内容
 
