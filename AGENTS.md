@@ -3,7 +3,8 @@
 ## Project Context
 
 AetherLab is a modular AI engineering platform for LLM inference, RAG, agents,
-evaluation, and observability. The repository is currently in Pre-Alpha / Phase 0.
+evaluation, and observability. The repository is currently in Pre-Alpha. Phase 0 is
+complete, and Phase 1 has not started.
 
 - Treat `docs/design.md` as the stable product and architecture direction.
 - Treat `docs/roadmap.md` as the source of truth for status, phases, and completion
