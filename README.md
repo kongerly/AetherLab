@@ -1,83 +1,86 @@
 # AetherLab
 
-AetherLab 是一个模块化 AI 工程平台，计划围绕大语言模型推理、RAG、Agent、评测和可观测性，
-逐步构建可运行、可扩展的实验与应用工作流。
+AetherLab 是一个面向 AI Engineering 的模块化实验与应用平台，计划围绕大语言模型推理、RAG、Agent、评测与可观测性，按小而完整的纵向闭环逐步构建可运行、可扩展的工程工作流。
 
-> **当前状态：** Pre-Alpha。项目已提供 FastAPI 后端基础，包括健康检查、配置校验、JSON 请求
-> 日志、带请求 ID 的统一错误响应及 CI 工作流。Phase 0 已完成并通过本地及远端 CI 验收；
-> Phase 1 尚未开始，AI 平台能力仍处于规划阶段。
+> **当前状态：** Pre-Alpha（Phase 0 已完成并通过本地与远端 CI 验收）。当前已提供 FastAPI 后端工程基础；Phase 1 尚未开始，AI 平台核心能力仍处于规划阶段。
 
-## 已实现能力
+## 当前能力
 
-- 使用 `uv` 管理的 Python 3.13 后端
-- FastAPI 应用与 OpenAPI 接口文档
-- `GET /health` 健康检查
-- Ruff 静态检查与格式化配置
-- 健康检查、配置、错误契约和请求上下文测试
-- 环境配置校验与后端 dotenv 模板
-- JSON 应用日志与服务端生成的 `X-Request-ID` 响应头
-- 统一的 HTTP、参数校验、业务异常及未处理异常响应
-- 在相关推送和拉取请求中执行后端检查的 GitHub Actions 工作流
-- 共享的 VS Code 工作区配置
-- 项目设计、路线图、后端设计与工程规范文档
+- **后端服务基础**
+  - 基于 `uv` 管理的 Python 3.13 FastAPI 应用，提供 `GET /health` 健康检查与 OpenAPI 交互式文档
+  - 基于 `pydantic-settings` 的启动期环境变量校验与 `backend/.env.example` 配置模板
+  - 服务端生成的 `X-Request-ID`、脱敏 JSON 应用日志，以及覆盖 HTTP、参数校验、业务异常与未处理异常的统一错误响应
+- **工程与质量保障**
+  - 覆盖健康检查、配置校验、错误契约、请求 ID 关联、并发上下文隔离与日志脱敏的 `pytest` 测试套件
+  - 统一的 Ruff 静态检查与格式化配置
+  - 在相关推送与 Pull Request 中自动运行后端检查的 GitHub Actions CI 工作流
+  - 共享的 VS Code 工作区配置，以及分职责的项目设计、路线图、后端设计与工程规范文档
 
-## 后续方向
+## 演进路线
 
-项目按小而完整的纵向功能逐步推进：
+以下能力均处于**规划阶段**（尚未进入实现），将按小而完整的纵向闭环逐步推进：
 
-1. 兼容 OpenAI 的 LLM Provider、聊天 API、SSE 流式响应、最小 Web 界面及调用追踪
-2. 使用 PostgreSQL 持久化会话
-3. 支持可追溯引用与评测的基础 RAG
-4. 工具调用与有明确执行边界的 Agent 循环
-5. 更完整的评测、可观测性和工作流能力
+1. **Phase 1 — 首个聊天纵向闭环**：OpenAI-compatible LLM Provider、Chat API、SSE 流式响应、最小 Web 界面，以及请求级 Trace 与 Token Usage 记录
+2. **Phase 2 — 会话持久化**：基于 PostgreSQL、SQLAlchemy 与 Alembic 持久化对话和消息历史
+3. **Phase 3–4 — RAG 能力**：先完成可追溯引用与基础评测的单知识库 RAG，再依据评测结果引入检索增强
+4. **Phase 5–6 — Agent 与工作流**：具备明确执行边界的工具调用、基础 Agent 循环与可恢复工作流
+5. **Phase 7–8 — 评测平台与按需扩展**：统一评测平台、可观测性深化，以及仅在真实瓶颈出现后引入的基础设施扩展
+
+各阶段详细范围与完成条件见 [开发路线图](docs/roadmap.md)。
 
 ## 项目文档
 
-- [项目设计](docs/design.md)：稳定的产品方向、设计原则、架构与技术选型
-- [开发路线图](docs/roadmap.md)：当前状态、开发阶段与完成条件
-- [后端设计](docs/backend.md)：分层、Provider、聊天、SSE、错误、日志与追踪
-- [工程规范](docs/engineering.md)：开发流程、代码质量、测试、CI、安全与公开仓库策略
+| 文档 | 说明 |
+| --- | --- |
+| [项目设计](docs/design.md) | 稳定的产品定位、核心原则、总体架构与技术方向 |
+| [开发路线图](docs/roadmap.md) | 当前实现状态、阶段规划与验收完成条件 |
+| [后端设计](docs/backend.md) | 后端分层、Provider、Chat、SSE、错误、日志与追踪约束 |
+| [工程规范](docs/engineering.md) | 开发工作流、代码质量、测试、CI、安全与公开仓库策略 |
 
 ## 环境要求
 
-- Python 3.13
-- [uv](https://docs.astral.sh/uv/)
+- Python `3.13.17`（开发与 CI 精确基线；支持范围为 `>=3.13.17,<3.14`）
+- [uv](https://docs.astral.sh/uv/) `0.13.4` 或更新版本
 
-Docker Compose、前端和外部模型服务尚未配置。
+当前尚未配置 Docker Compose、前端及外部模型服务。
 
 ## 快速启动
 
-安装锁文件指定的后端依赖：
+### 1. 安装依赖
+
+先安装 Python `3.13.17`；若 `uv python install 3.13.17` 暂未提供该版本，可直接使用 [Python 3.13.17 官方发行版](https://www.python.org/downloads/release/python-31317/)。随后安装锁文件指定的后端依赖：
 
 ```bash
 cd backend
 uv sync --frozen
 ```
 
-默认配置无需 dotenv 文件即可运行。如需覆盖配置，将 `backend/.env.example` 复制为
-`backend/.env`，并设置以下变量：
+### 2. 配置环境变量（可选）
+
+使用默认配置无需 `.env` 文件即可启动。如需覆盖，将 `backend/.env.example` 复制为 `backend/.env`：
 
 | 变量 | 默认值 | 可选值 |
 | --- | --- | --- |
 | `APP_ENV` | `development` | `development`、`test`、`production` |
 | `LOG_LEVEL` | `INFO` | `DEBUG`、`INFO`、`WARNING`、`ERROR`、`CRITICAL` |
 
-环境变量优先于 dotenv 文件；无效值会导致启动失败。命令从 `backend/` 目录执行，
-根目录的 `.env.example` 仅用于指向后端配置模板。
+配置优先级为 **环境变量 > `backend/.env` > 默认值**，无效值会导致启动失败。所有后端命令均在 `backend/` 目录执行；根目录的 `.env.example` 仅作入口说明，不会被后端加载。
 
-启动开发服务器：
+### 3. 启动开发服务器
 
 ```bash
 uv run uvicorn app.main:app --reload --no-access-log
 ```
 
-服务地址：
+> 保留 `--no-access-log`，避免 Uvicorn 默认访问日志输出原始 URL。
+
+启动后的本地访问地址：
 
 - API：<http://127.0.0.1:8000>
 - 交互式接口文档：<http://127.0.0.1:8000/docs>
 - 健康检查：<http://127.0.0.1:8000/health>
 
-验证健康检查接口：
+### 4. 验证健康检查
 
 ```bash
 curl http://127.0.0.1:8000/health
@@ -92,20 +95,37 @@ curl http://127.0.0.1:8000/health
 }
 ```
 
-每个 HTTP 响应都包含服务端新生成的 `X-Request-ID`，不会复用传入的请求 ID。
-应用以 JSON 格式记录相同的请求 ID、路由模板、状态码、耗时（毫秒）及错误码。
-未匹配路由记录为 `<unmatched>`；日志不包含原始路径、查询参数、请求体或异常文本。
-保留 `--no-access-log`，避免 Uvicorn 独立的访问日志记录原始 URL。
-Uvicorn 生命周期日志沿用其标准格式。`LOG_LEVEL` 控制应用日志，级别高于 `INFO` 时，
-不会输出普通请求完成日志。
+### 升级已有虚拟环境
 
-错误统一使用 `{ "code": "...", "message": "...", "request_id": "..." }` 结构，
-覆盖 404、405、参数校验失败，以及响应头发送前发生的未处理异常。
-错误消息使用固定文本，不暴露输入值或异常详情。流式响应生命周期处理和分布式追踪属于 Phase 1。
+仅修改版本文件不会自动升级已有 `.venv`。进行 Python 安全补丁或版本升级时，请先备份旧环境，在 `backend/` 目录下重建 `.venv`、同步依赖并核对实际版本（若解释器未被自动发现，可将 `--python` 参数替换为新解释器的完整路径）：
+
+```bash
+uv venv --python 3.13.17
+uv sync --frozen
+uv run --frozen python -c "import sys; print(sys.executable); print(sys.version)"
+```
+
+确认版本号一致并通过下方开发检查后再清理备份。项目本地解释器与临时备份可放在已被 Git 忽略的 `.python-runtime/` 目录中。
+
+## 运行时约定
+
+- **请求 ID 关联**：每个 HTTP 响应均附带服务端新生成的 `X-Request-ID`，不会复用客户端传入值，并在错误响应与应用日志中使用同一个 ID。
+- **结构化脱敏日志**：应用以 JSON 格式记录请求 ID、方法、路由模板、状态码、耗时（毫秒）及错误码；未匹配路由记为 `<unmatched>`，不记录原始路径、查询参数、请求头、请求体或异常文本。Uvicorn 生命周期日志沿用标准格式；`LOG_LEVEL` 高于 `INFO` 时不会输出普通请求完成日志。
+- **统一错误契约**：统一覆盖 404、405、参数校验失败（422）、业务资源缺失，以及响应头发送前发生的未处理异常（500）。错误消息为固定英文文本，不暴露用户输入、异常详情或堆栈：
+
+```json
+{
+  "code": "...",
+  "message": "...",
+  "request_id": "..."
+}
+```
+
+> 流式响应生命周期处理与分布式追踪（Trace ID）属于 Phase 1 范围，当前版本仅提供 HTTP 请求级关联。
 
 ## 开发检查
 
-在 `backend/` 目录执行：
+在 `backend/` 目录下运行静态检查、格式检查与测试：
 
 ```bash
 uv run ruff check .
@@ -113,61 +133,42 @@ uv run ruff format --check .
 uv run pytest
 ```
 
-测试覆盖健康检查响应、配置校验、错误契约、请求 ID 关联、并发上下文隔离及 JSON 日志脱敏，
-无需模型服务或 API 密钥。CI 先执行 `uv sync --frozen` 同步依赖，再运行相同的静态检查、
-格式检查和测试。
+测试覆盖健康检查响应、配置校验、错误契约、请求 ID 关联、并发上下文隔离及 JSON 日志脱敏，无需外部模型服务或 API Key。GitHub Actions CI 会先执行 `uv sync --frozen` 同步依赖并断言 Python 版本，再使用 `uv run --frozen` 运行相同的三项检查。
 
 ## 仓库结构
 
 ```text
 AetherLab/
-|-- backend/             FastAPI 后端与 Python 项目配置
-|-- frontend/            预留的 React 与 TypeScript 前端目录
-|-- docs/                项目文档
-|   |-- design.md        稳定的产品与架构方向
-|   |-- roadmap.md       当前状态与开发阶段
-|   |-- backend.md       后端架构与接口契约
-|   `-- engineering.md   仓库工作流与质量标准
-|-- scripts/             项目自动化脚本
-|-- data/                被 Git 忽略的本地运行数据
-|-- .github/             仓库自动化与后端 CI
-|-- AGENTS.md            公开的 AI 辅助开发规范
-|-- .env.example         后端配置模板的入口说明
-|-- docker-compose.yml   预留文件；Phase 0 暂无服务需求
-`-- README.md
+├── backend/             # FastAPI 后端与 Python 项目配置
+├── frontend/            # 预留的 React 与 TypeScript 前端目录
+├── docs/                # 项目文档
+│   ├── design.md        # 稳定的产品定位与总体架构
+│   ├── roadmap.md       # 当前状态与开发阶段
+│   ├── backend.md       # 后端架构与接口契约
+│   └── engineering.md   # 仓库工作流与质量标准
+├── scripts/             # 项目自动化脚本（按需添加）
+├── data/                # 被 Git 忽略的本地运行数据
+├── .github/             # 仓库自动化与后端 CI 工作流
+├── .vscode/             # 共享的 VS Code 工作区配置
+├── AGENTS.md            # 公开的项目级 AI 辅助开发规范
+├── .env.example         # 指向后端配置模板的入口说明
+├── docker-compose.yml   # 预留文件（Phase 0 暂无服务需求）
+├── LICENSE              # MIT 许可证
+└── README.md
 ```
-
-## AI 辅助开发
-
-仓库中的 [AGENTS.md](AGENTS.md) 定义适用于整个项目的 AI 编程协作规范，
-其中不包含凭据、私有端点、个人路径或机器专用配置。
-
-如需仅适用于本地检出的私有 Codex 指令：
-
-1. 将 `AGENTS.md` 复制为 `AGENTS.override.md`。
-2. 在副本中加入本地指令。
-3. 密钥存放在 `.env` 或密钥管理器中，不写入任何 Agent 指令文件。
-
-`AGENTS.override.md` 已被 Git 忽略。Codex 优先使用同目录的此文件，它会替换 `AGENTS.md`，
-而不是与之合并。需要跨仓库复用的个人默认指令也可以放在 `~/.codex/AGENTS.md` 中。
-
-查找顺序、作用范围和覆盖行为见 [Codex 官方 AGENTS.md 文档](https://learn.chatgpt.com/docs/agent-configuration/agents-md)。
 
 ## 开发原则
 
-- 以小而完整的纵向功能推进开发。
-- 避免推测性的抽象和空模块骨架。
-- 新增行为时同步添加测试。
-- 从首次实现起，让 LLM 操作具备可观测性和可评测性。
-- 保持关键 Provider 与基础设施组件可替换。
-- 代码标识符、文件名、API 消息、日志和错误使用英文；注释、Docstring 说明和文档优先中文。
-- 提交信息可用中文或英文，清楚说明变更目的。
-- 不提交密钥、本地数据、模型文件或已填入配置的 `.env` 文件。
+- **纵向闭环优先**：以小而完整的纵向功能推进开发，避免推测性抽象与空模块骨架。
+- **测试同步演进**：新增行为时同步补充能验证外部表现的自动化测试。
+- **可观测与可评测**：从首条 LLM 链路起内建可观测性与可评测性。
+- **核心组件可替换**：保持关键 Provider 与基础设施组件通过清晰接口解耦。
+- **明确的语言规范**：代码标识符、文件名、API 消息、日志与错误使用英文；注释、Docstring 说明与项目文档优先中文；提交信息中英文均可，需清晰说明变更目的。
+- **严格的安全边界**：不提交密钥、本地数据、模型文件或已填入配置的 `.env` 文件。
 
 ## 参与开发
 
-项目仍处于早期阶段。修改前请阅读 [AGENTS.md](AGENTS.md) 和 [`docs/`](docs/) 下的相关文档。
-保持文档与实际实现一致，并在发起拉取请求前运行相关检查。
+项目仍处于早期阶段。提交变更前，请先阅读 [AGENTS.md](AGENTS.md) 与 [`docs/`](docs/) 下的相关文档，保持文档与实际实现一致，并在发起 Pull Request 前运行相关开发检查。
 
 ## 许可证
 

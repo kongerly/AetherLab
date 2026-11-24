@@ -7,7 +7,8 @@
 
 ## 1. 当前实现
 
-后端当前是 Python 3.13 + FastAPI 的最小应用，入口为 `backend/app/main.py`，已实现：
+后端当前是 Python 3.13 + FastAPI 的最小应用，开发与 CI 精确基线为 3.13.17，
+支持范围为 `>=3.13.17,<3.14`。入口为 `backend/app/main.py`，已实现：
 
 ```http
 GET /health

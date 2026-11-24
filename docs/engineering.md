@@ -101,7 +101,13 @@ uv run pytest
 
 ### 4.2 基本要求
 
-- 使用 Python 3.13，并遵守 `backend/pyproject.toml` 的版本范围。
+- 开发与 CI 使用 `backend/.python-version` 固定的 Python 3.13.17，支持范围为
+  `>=3.13.17,<3.14`；使用 uv 0.13.4 或更新版本，门槛由 `tool.uv.required-version` 校验。
+- 解释器安全升级时先保留旧虚拟环境，重建 `.venv` 后以 `uv sync --frozen` 安装依赖，
+  核对实际解释器版本并完成 Ruff、pytest 验收；仅修改版本文件不能升级已有环境。
+  本地解释器和临时环境备份可放在已忽略的 `.python-runtime/` 下，不提交仓库。
+- 调整 Python 安全下限时同步锁文件的 `requires-python` 元数据，保持依赖版本和下载哈希不变；
+  使用 `uv lock --check --offline` 验证一致性，不借安全补丁升级重新解析无关依赖。
 - 公共接口与非简单内部函数使用类型注解。
 - 公共函数和类使用 Google 风格 Docstring。
 - Docstring 说明优先中文，结构标签保留英文，首句使用完整的句末标点。
@@ -142,7 +148,8 @@ Agent           → Tool and Task Evaluation
 ## 6. Continuous Integration
 
 当前 `.github/workflows/backend-ci.yml` 在 push 与 pull request 修改 `backend/**`
-或该工作流时执行，使用 Python 3.13，并设置 `APP_ENV=test`、`LOG_LEVEL=INFO`：
+或该工作流时执行，通过 `actions/setup-python` 读取 `backend/.python-version` 安装精确版本，
+固定 uv 0.13.4，并设置 `APP_ENV=test`、`LOG_LEVEL=INFO`：
 
 ```text
 uv sync --frozen
@@ -151,7 +158,8 @@ ruff format --check
 pytest
 ```
 
-CI 使用锁文件、固定 Python 版本并缓存依赖。本地检查通过不等同于远端 CI 已通过，
+CI 禁止 uv 自动下载其他解释器，同步后打印并断言实际 Python 版本，后续 `uv run` 使用
+`--frozen` 保持锁文件不变，并缓存依赖。本地检查通过不等同于远端 CI 已通过，
 阶段验收须核对 GitHub Actions 的实际运行结果。只有在基础流程稳定后，再添加集成测试、构建、
 安全扫描或发布任务。
 
@@ -165,6 +173,12 @@ CI 使用锁文件、固定 Python 版本并缓存依赖。本地检查通过不
 - 不提交仅适用于个人机器的路径、端口偏好或模型位置。
 
 ## 8. Security
+
+Python 3.13.17 与 uv 0.13.4 基线对应近期安全补丁，见
+[Python 发布说明](https://www.python.org/downloads/release/python-31317/) 和
+[uv 证书信任公告](https://github.com/astral-sh/uv/security/advisories/GHSA-hq85-5cpj-mr62)。
+后续安全补丁需要同步本地精确版本、最低支持范围和 CI，并重新验收环境；
+不得通过关闭 TLS 校验绕过下载失败。
 
 第一阶段不实现复杂多租户系统，但从一开始遵守以下边界：
 

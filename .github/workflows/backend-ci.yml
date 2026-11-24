@@ -22,28 +22,35 @@ jobs:
     env:
       APP_ENV: test
       LOG_LEVEL: INFO
+      UV_PYTHON_DOWNLOADS: never
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Set up Python
+        uses: actions/setup-python@v7
+        with:
+          python-version-file: backend/.python-version
+
       - name: Install uv
         uses: astral-sh/setup-uv@v6
         with:
+          version: "0.13.4"
           enable-cache: true
           cache-dependency-glob: backend/uv.lock
-
-      - name: Set up Python
-        run: uv python install 3.13
 
       - name: Sync dependencies
         run: uv sync --frozen
 
+      - name: Verify Python runtime
+        run: uv run --frozen python -c "import pathlib, sys; print(sys.executable); print(sys.version); assert sys.version.split()[0] == pathlib.Path('.python-version').read_text().strip()"
+
       - name: Run Ruff lint
-        run: uv run ruff check .
+        run: uv run --frozen ruff check .
 
       - name: Check Ruff formatting
-        run: uv run ruff format --check .
+        run: uv run --frozen ruff format --check .
 
       - name: Run tests
-        run: uv run pytest
+        run: uv run --frozen pytest
